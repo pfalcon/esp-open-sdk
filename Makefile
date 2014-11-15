@@ -48,7 +48,7 @@ toolchain:
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	./ct-ng build
 
-crosstool-NG/ct-ng:
+crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	make -C crosstool-NG -f ../Makefile ct-ng
 
 ct-ng:
@@ -56,3 +56,7 @@ ct-ng:
 	./configure --prefix=`pwd`
 	make MAKELEVEL=0
 	make install MAKELEVEL=0
+
+crosstool-NG/bootstrap:
+	@echo "You cloned without --recursive, fetching submodules for you."
+	git submodule update --init --recursive
