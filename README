@@ -25,6 +25,7 @@ OpenSource components of SDK are based on:
 lwIP, http://savannah.nongnu.org/projects/lwip/
 Contiki, http://www.contiki-os.org/
 axTLS, http://axtls.sourceforge.net/
+wpa_supplicant, http://w1.fi/wpa_supplicant/ (source withheld by Espressif)
 
 
 Building
