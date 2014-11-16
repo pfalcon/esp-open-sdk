@@ -32,11 +32,15 @@ Building
 
 To build standalone SDK with toolchain, you need GNU/POSIX system (Linux,
 BSD, MacOSX, Windows with Cygwin) with standard GNU development tools
-installed, like gcc, binutils, flex, bison, etc.
+installed, like gcc, binutils, flex, bison, etc. For Debian/Ubuntu
+install:
+
+sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
+    flex bison texinfo gawk ncurses-dev libexpat-dev
 
 To start build process run:
 
-    make
+make
 
 This will download all necessary components and compile them. Once done,
 the toolchain (with Xtensa HAL library) will be available in toolchain/
