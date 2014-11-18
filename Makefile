@@ -20,7 +20,13 @@ else
 endif
 
 
-sdk_patch: sdk/lib/libpp.a
+sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+ifeq ($(STANDALONE),y)
+	@echo "Installing vendor SDK headers to toolchain sysroot"
+	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
+	@echo "Installing vendor SDK libs to toolchain sysroot"
+	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
+endif
 
 sdk/lib/libpp.a: esp_iot_sdk_v0.9.2/.dir FRM_ERR_PATCH.rar
 	unrar x -o+ FRM_ERR_PATCH.rar
@@ -50,18 +56,12 @@ libhal:
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	make -C crosstool-NG -f ../Makefile toolchain
 
-toolchain: esp_iot_sdk_v0.9.2/.dir
+toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	echo CT_STATIC_TOOLCHAIN=y >> .config
 	./ct-ng build
-ifeq ($(STANDALONE),y)
-	@echo "Installing additional SDK headers"
-	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/usr/include/
-	@echo "Installing additional SDK libraries"
-	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/lib/
-endif
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	make -C crosstool-NG -f ../Makefile ct-ng
