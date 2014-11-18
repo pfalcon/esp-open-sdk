@@ -44,9 +44,9 @@ esp_iot_sdk_v0.9.2_14_10_24.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
 
 $(TOOLCHAIN)/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	make -C lx106-hal -f ../Makefile libhal
+	make -C lx106-hal -f ../Makefile _libhal
 
-libhal:
+_libhal:
 	autoreconf -i
 	PATH=$(TOOLCHAIN)/bin:$(PATH) ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make
@@ -54,9 +54,9 @@ libhal:
 
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	make -C crosstool-NG -f ../Makefile toolchain
+	make -C crosstool-NG -f ../Makefile _toolchain
 
-toolchain:
+_toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
@@ -64,9 +64,9 @@ toolchain:
 	./ct-ng build
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
-	make -C crosstool-NG -f ../Makefile ct-ng
+	make -C crosstool-NG -f ../Makefile _ct-ng
 
-ct-ng:
+_ct-ng:
 	./bootstrap
 	./configure --prefix=`pwd`
 	make MAKELEVEL=0
