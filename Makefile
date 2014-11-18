@@ -1,5 +1,5 @@
 TOP=$(PWD)
-TOOLCHAIN=$(TOP)/toolchain
+TOOLCHAIN=$(TOP)/xtensa-lx106-elf
 
 all: sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
@@ -7,9 +7,7 @@ all: sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo 'export PATH=$(TOOLCHAIN)/bin:$$PATH'
 	@echo
-	@echo "Espressif ESP8266 SDK is installed, to use it run compiler as follows:"
-	@echo
-	@echo "xtensa-lx106-elf-gcc -I$(TOP)/sdk/include -L$(TOP)/sdk/lib"
+	@echo "Espressif ESP8266 SDK is installed, additional blobs are installed into the toolchain"
 	@echo
 
 sdk_patch: sdk/lib/libpp.a
@@ -42,11 +40,16 @@ libhal:
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	make -C crosstool-NG -f ../Makefile toolchain
 
-toolchain:
+toolchain: esp_iot_sdk_v0.9.2/.dir
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	echo CT_STATIC_TOOLCHAIN=y >> .config
 	./ct-ng build
+	@echo "Installing additional SDK headers"
+	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/usr/include/
+	@echo "Installing additional SDK blobs"
+	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/lib/
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	make -C crosstool-NG -f ../Makefile ct-ng
