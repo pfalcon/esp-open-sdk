@@ -39,16 +39,38 @@ install:
 sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev
 
-To start build process run:
+The project can be build in two modes:
 
-make
+1. Where OpenSource toolchain and tools kept separate from vendor IoT SDK
+containing binary blobs. That makes licensing more clear, and facilitates
+upgrades to new vendor SDK releases.
+
+2. Completely standalone ESP8266 SDK with vendor SDK files merged with
+toolchain. This mode makes it easier to build software (no additinal
+-I and -L flags are needed), but redistributability of this build is
+unclear and upgrade to newer vendor IoT SDK release is complicated.
+This mode is default for local builds. Note that if you want to
+redistribute binary toolchain built with this mode, your should:
+1) make it clear to your users that the release is bound to particular
+vendor IoT SDK and provide instructions how to upgrade to newer vendor
+IoT SDK releases; 2) abide by licensing terms of the vendor IoT SDK.
+
+To build separated SDK:
+
+make STANDALONE=n
+
+To build standalone SDK:
+
+make STANDALONE=y
 
 This will download all necessary components and compile them. Once done,
-the toolchain (with Xtensa HAL library) will be available in toolchain/
+the toolchain (with Xtensa HAL library) will be available in xtensa-lx106-elf/
 directory. Add its bin/ subdirectory to execute "xtensa-lx106-elf-gcc"
 and other tools.
 
-ESP8266 SDK will be installed in sdk/, to use it, run the compiler with
-corresponding include and lib dir flags:
+ESP8266 SDK will be installed in sdk/. If you chose non-standalone SDK, to use it,
+run the compiler with corresponding include and lib dir flags:
 
 xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
+
+Extra -I and -L flags are not needed for standalone SDK.
