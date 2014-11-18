@@ -1,6 +1,6 @@
 TOP=$(PWD)
 TOOLCHAIN=$(TOP)/xtensa-lx106-elf
-OPENSOURCE=n
+STANDALONE=y
 
 all: sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
@@ -8,14 +8,14 @@ all: sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo 'export PATH=$(TOOLCHAIN)/bin:$$PATH'
 	@echo
-ifeq ($(OPENSOURCE),y)
+ifneq ($(STANDALONE),y)
 	@echo "Espressif ESP8266 SDK is installed. Toolchain contains only Open Source components"
 	@echo "To link external proprietary libraries add:"
 	@echo
 	@echo "xtensa-lx106-elf-gcc -I$(TOP)/sdk/include -L$(TOP)/sdk/lib"
 	@echo
 else
-	@echo "Espressif ESP8266 SDK is installed, additional blobs are installed into the toolchain"
+	@echo "Espressif ESP8266 SDK is installed, its libraries and headers are merged with the toolchain"
 	@echo
 endif
 
@@ -56,10 +56,10 @@ toolchain: esp_iot_sdk_v0.9.2/.dir
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	echo CT_STATIC_TOOLCHAIN=y >> .config
 	./ct-ng build
-ifneq ($(OPENSOURCE),y)
+ifeq ($(STANDALONE),y)
 	@echo "Installing additional SDK headers"
 	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/usr/include/
-	@echo "Installing additional SDK blobs"
+	@echo "Installing additional SDK libraries"
 	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/lib/
 endif
 
