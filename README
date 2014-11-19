@@ -37,7 +37,7 @@ installed, like gcc, binutils, flex, bison, etc. For Debian/Ubuntu
 install:
 
 sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
-    flex bison texinfo gawk ncurses-dev libexpat-dev
+    flex bison texinfo gawk ncurses-dev libexpat-dev python sed
 
 The project can be build in two modes:
 
