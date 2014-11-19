@@ -4,7 +4,7 @@ STANDALONE=y
 
 .PHONY: crosstool-NG toolchain libhal
 
-all: esptool .sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+all: esptool .sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
