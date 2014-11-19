@@ -4,7 +4,7 @@ STANDALONE=y
 
 .PHONY: crosstool-NG toolchain libhal
 
-all: sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+all: esptool .sdk_patch $(TOOLCHAIN)/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -21,14 +21,17 @@ else
 	@echo
 endif
 
+esptool: toolchain
+	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
-sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+.sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers to toolchain sysroot"
 	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 	@echo "Installing vendor SDK libs to toolchain sysroot"
 	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
 endif
+	touch $@
 
 sdk/lib/libpp.a: esp_iot_sdk_v0.9.2/.dir FRM_ERR_PATCH.rar
 	unrar x -o+ FRM_ERR_PATCH.rar
