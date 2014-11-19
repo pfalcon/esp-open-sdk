@@ -26,15 +26,15 @@ esptool: toolchain
 
 .sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 ifeq ($(STANDALONE),y)
-	@echo "Installing vendor SDK headers to toolchain sysroot"
-	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
-	@echo "Installing vendor SDK libs to toolchain sysroot"
-	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
-	@echo "Installing vendor SDK linker scripts to toolchain sysroot"
+	@echo "Installing vendor SDK headers into toolchain sysroot"
+	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
+	@echo "Installing vendor SDK libs into toolchain sysroot"
+	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
+	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
 	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
 	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
 endif
-	touch $@
+	@touch $@
 
 sdk/lib/libpp.a: esp_iot_sdk_v0.9.2/.dir FRM_ERR_PATCH.rar
 	unrar x -o+ FRM_ERR_PATCH.rar
