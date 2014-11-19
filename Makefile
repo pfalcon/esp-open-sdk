@@ -30,6 +30,9 @@ ifeq ($(STANDALONE),y)
 	@cp -Rfv sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 	@echo "Installing vendor SDK libs to toolchain sysroot"
 	@cp -Rfv sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
+	@echo "Installing vendor SDK linker scripts to toolchain sysroot"
+	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
+	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
 endif
 	touch $@
 
