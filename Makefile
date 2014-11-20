@@ -2,9 +2,9 @@ TOP=$(PWD)
 TOOLCHAIN=$(TOP)/xtensa-lx106-elf
 STANDALONE=y
 
-.PHONY: crosstool-NG toolchain libhal
+.PHONY: crosstool-NG toolchain libhal libcirom
 
-all: esptool .sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+all: esptool libcirom .sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -23,6 +23,13 @@ endif
 
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a toolchain
+	@echo "Creating irom version of libc..."
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
+		--rename-section .literal=.irom0.literal $(<) $(@);
+
+libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 .sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 ifeq ($(STANDALONE),y)
@@ -72,7 +79,7 @@ _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
-	echo CT_STATIC_TOOLCHAIN=y >> .config
+	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
 
 
