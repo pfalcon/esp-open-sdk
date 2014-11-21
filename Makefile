@@ -97,3 +97,10 @@ _ct-ng:
 crosstool-NG/bootstrap:
 	@echo "You cloned without --recursive, fetching submodules for you."
 	git submodule update --init --recursive
+
+
+clean:
+	make -C crosstool-NG clean MAKELEVEL=0
+	-rm -rf $(TOOLCHAIN)
+	-rm -rf $(readlink sdk)
+	-rm -f sdk
