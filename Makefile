@@ -102,5 +102,5 @@ crosstool-NG/bootstrap:
 clean:
 	make -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf $(TOOLCHAIN)
-	-rm -rf $(readlink sdk)
+	-rm -rf $(shell readlink sdk)
 	-rm -f sdk
