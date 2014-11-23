@@ -33,11 +33,14 @@ Building
 
 To build standalone SDK with toolchain, you need GNU/POSIX system (Linux,
 BSD, MacOSX, Windows with Cygwin) with standard GNU development tools
-installed, like gcc, binutils, flex, bison, etc. For Debian/Ubuntu
+installed, like gcc, binutils, flex, bison, etc. For Ubuntu 14.04
 install:
 
 sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python sed
+
+For other Debian/Ubuntu versions, dependencies may be somewhat different.
+E.g., you may need to install libtool-bin, etc.
 
 The project can be build in two modes:
 
