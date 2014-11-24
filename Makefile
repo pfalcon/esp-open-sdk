@@ -1,10 +1,19 @@
 TOP=$(PWD)
 TOOLCHAIN=$(TOP)/xtensa-lx106-elf
+VENDOR_SDK = 0.9.3
+
+VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
+VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
+
+VENDOR_SDK_ZIP_0.9.3=esp_iot_sdk_v0.9.3_14_11_21.zip
+VENDOR_SDK_DIR_0.9.3=esp_iot_sdk_v0.9.3
+VENDOR_SDK_ZIP_0.9.2=esp_iot_sdk_v0.9.2_14_10_24.zip
+VENDOR_SDK_DIR_0.9.2=esp_iot_sdk_v0.9.2
 STANDALONE=y
 
-.PHONY: crosstool-NG toolchain libhal libcirom
+.PHONY: crosstool-NG toolchain libhal libcirom sdk
 
-all: esptool libcirom .sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -31,7 +40,18 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
-.sdk_patch: sdk/lib/libpp.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+sdk_patch: .sdk_patch_$(VENDOR_SDK)
+
+.sdk_patch_0.9.3: esp_iot_sdk_v0.9.3_14_11_21_patch1.zip esp_iot_sdk_v0.9.3/.dir
+	unzip -o $<
+	@touch $@
+
+.sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir 
+	unrar x -o+ $<
+	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
+	@touch $@
+
+standalone: sdk sdk_patch toolchain
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers into toolchain sysroot"
 	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
@@ -41,19 +61,21 @@ ifeq ($(STANDALONE),y)
 	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
 	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
 endif
-	@touch $@
-
-sdk/lib/libpp.a: esp_iot_sdk_v0.9.2/.dir FRM_ERR_PATCH.rar
-	unrar x -o+ FRM_ERR_PATCH.rar
-	cp FRM_ERR_PATCH/*.a $$(dirname $@)
 
 FRM_ERR_PATCH.rar:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=10"
+esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=73"
 
-esp_iot_sdk_v0.9.2/.dir: esp_iot_sdk_v0.9.2_14_10_24.zip
-	unzip $^
-	ln -s $$(dirname $@) sdk
+sdk: $(VENDOR_SDK_DIR)/.dir
+	ln -snf $(VENDOR_SDK_DIR) sdk
+
+$(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
+	unzip -o $^
 	touch $@
+
+esp_iot_sdk_v0.9.3_14_11_21.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=72"
 
 esp_iot_sdk_v0.9.2_14_10_24.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
