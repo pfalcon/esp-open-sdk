@@ -72,6 +72,7 @@ sdk: $(VENDOR_SDK_DIR)/.dir
 
 $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	unzip -o $^
+	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
 esp_iot_sdk_v0.9.3_14_11_21.zip:
