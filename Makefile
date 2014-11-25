@@ -122,8 +122,15 @@ crosstool-NG/bootstrap:
 	git submodule update --init --recursive
 
 
-clean:
+clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf $(TOOLCHAIN)
-	-rm -rf $(shell readlink sdk)
-	-rm -f sdk
+
+clean-sdk:
+	rm -rf $(VENDOR_SDK_DIR)
+	rm -f sdk
+	rm -f .sdk_patch_$(VENDOR_SDK)
+
+clean-sysroot:
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
