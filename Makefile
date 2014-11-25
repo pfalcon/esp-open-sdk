@@ -1,15 +1,17 @@
-TOP=$(PWD)
-TOOLCHAIN=$(TOP)/xtensa-lx106-elf
+TOP = $(PWD)
+TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 VENDOR_SDK = 0.9.3
+
+UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
-VENDOR_SDK_ZIP_0.9.3=esp_iot_sdk_v0.9.3_14_11_21.zip
-VENDOR_SDK_DIR_0.9.3=esp_iot_sdk_v0.9.3
-VENDOR_SDK_ZIP_0.9.2=esp_iot_sdk_v0.9.2_14_10_24.zip
-VENDOR_SDK_DIR_0.9.2=esp_iot_sdk_v0.9.2
-STANDALONE=y
+VENDOR_SDK_ZIP_0.9.3 = esp_iot_sdk_v0.9.3_14_11_21.zip
+VENDOR_SDK_DIR_0.9.3 = esp_iot_sdk_v0.9.3
+VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
+VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
+STANDALONE = y
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
@@ -33,7 +35,7 @@ endif
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a toolchain
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo "Creating irom version of libc..."
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
@@ -43,7 +45,7 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_0.9.3: esp_iot_sdk_v0.9.3_14_11_21_patch1.zip esp_iot_sdk_v0.9.3/.dir
-	unzip -o $<
+	$(UNZIP) $<
 	@touch $@
 
 .sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir 
@@ -71,7 +73,7 @@ sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
 
 $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
-	unzip -o $^
+	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
