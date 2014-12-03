@@ -77,3 +77,12 @@ run the compiler with corresponding include and lib dir flags:
 xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
 
 Extra -I and -L flags are not needed for standalone SDK.
+
+
+Additional configuration
+========================
+
+You can build statically linked toolchain by uncommenting
+CT_STATIC_TOOLCHAIN=y option in crosstool-config-overrides
+file. More fine-tunable options may be available in that
+file and/or Makefile.
