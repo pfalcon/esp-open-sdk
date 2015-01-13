@@ -1,12 +1,15 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 VENDOR_SDK = 0.9.4
+#VENDOR_SDK = 0.9.5b1
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_0.9.5b1 = esp_iot_sdk_v0.9.5_b1_14_12_25.zip
+VENDOR_SDK_DIR_0.9.5b1 = esp_iot_sdk_v0.9.5_b1
 VENDOR_SDK_ZIP_0.9.4 = esp_iot_sdk_v0.9.4_14_12_19.zip
 VENDOR_SDK_DIR_0.9.4 = esp_iot_sdk_v0.9.4
 VENDOR_SDK_ZIP_0.9.3 = esp_iot_sdk_v0.9.3_14_11_21.zip
@@ -46,6 +49,9 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_0.9.5b1:
+	@touch $@
+
 .sdk_patch_0.9.4:
 	@touch $@
 
@@ -81,6 +87,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v0.9.5_b1_14_12_25.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=119"
 
 esp_iot_sdk_v0.9.4_14_12_19.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=111"
