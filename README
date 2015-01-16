@@ -79,6 +79,19 @@ xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
 Extra -I and -L flags are not needed for standalone SDK.
 
 
+Pulling updates
+===============
+The project is updated from time to time, to get the updates and prepare to
+build new SDK:
+
+make clean
+git pull
+git submodule update
+
+If you don't issue "make clean" (which causes toolchain and SDK to be rebuilt
+from scratch on next "make"), you risk getting broken/inconsistent result.
+
+
 Additional configuration
 ========================
 
