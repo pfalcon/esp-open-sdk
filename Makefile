@@ -53,6 +53,7 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_0.9.4:
+	patch -d $(VENDOR_SDK_DIR_0.9.4) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.3: esp_iot_sdk_v0.9.3_14_11_21_patch1.zip esp_iot_sdk_v0.9.3/.dir

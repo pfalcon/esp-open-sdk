@@ -1,0 +1,37 @@
+This patch fixes vendor SDK header "c_types.h" for C99 compatibility.
+
+diff -ur esp_iot_sdk_v0.9.4.org/include/c_types.h esp_iot_sdk_v0.9.4/include/c_types.h
+--- esp_iot_sdk_v0.9.4.org/include/c_types.h	2014-12-19 18:07:46.000000000 +0200
++++ esp_iot_sdk_v0.9.4/include/c_types.h	2015-01-17 19:43:49.258975759 +0200
+@@ -6,6 +6,9 @@
+ #ifndef _C_TYPES_H_
+ #define _C_TYPES_H_
+ 
++#include <stdint.h>
++#include <stdbool.h>
++#if 0
+ typedef unsigned char       uint8_t;
+ typedef signed char         sint8_t;
+ typedef signed char         int8_t;
+@@ -20,6 +23,7 @@
+ typedef unsigned long long  u_int64_t;
+ typedef float               real32_t;
+ typedef double              real64_t;
++#endif
+ 
+ typedef unsigned char       uint8;
+ typedef unsigned char       u8;
+@@ -78,10 +82,10 @@
+ #endif /* ICACHE_FLASH */
+ 
+ #ifndef __cplusplus
+-typedef unsigned char   bool;
++//typedef unsigned char   bool;
+ #define BOOL            bool
+-#define true            (1)
+-#define false           (0)
++//#define true            (1)
++//#define false           (0)
+ #define TRUE            true
+ #define FALSE           false
+ 
