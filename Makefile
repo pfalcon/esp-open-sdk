@@ -1,15 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 0.9.4
-#VENDOR_SDK = 0.9.5b1
+VENDOR_SDK = 0.9.5
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
-VENDOR_SDK_ZIP_0.9.5b1 = esp_iot_sdk_v0.9.5_b1_14_12_25.zip
-VENDOR_SDK_DIR_0.9.5b1 = esp_iot_sdk_v0.9.5_b1
+VENDOR_SDK_ZIP_0.9.5 = esp_iot_sdk_v0.9.5_15_01_23.zip
+VENDOR_SDK_DIR_0.9.5 = esp_iot_sdk_v0.9.5
 VENDOR_SDK_ZIP_0.9.4 = esp_iot_sdk_v0.9.4_14_12_19.zip
 VENDOR_SDK_DIR_0.9.4 = esp_iot_sdk_v0.9.4
 VENDOR_SDK_ZIP_0.9.3 = esp_iot_sdk_v0.9.3_14_11_21.zip
@@ -49,7 +48,11 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_0.9.5b1:
+.sdk_patch_0.9.5: sdk095_patch1.zip esp_iot_sdk_v0.9.5/.dir
+	$(UNZIP) $<
+	mv libmain_fix_0.9.5.a $(VENDOR_SDK_DIR)/lib/libmain.a
+	mv user_interface.h $(VENDOR_SDK_DIR)/include/
+	patch -d $(VENDOR_SDK_DIR_0.9.5) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.4:
@@ -80,6 +83,8 @@ FRM_ERR_PATCH.rar:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=10"
 esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=73"
+sdk095_patch1.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=190"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
@@ -89,8 +94,8 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
-esp_iot_sdk_v0.9.5_b1_14_12_25.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=119"
+esp_iot_sdk_v0.9.5_15_01_23.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=189"
 
 esp_iot_sdk_v0.9.4_14_12_19.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=111"
