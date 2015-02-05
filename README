@@ -68,7 +68,7 @@ make STANDALONE=y
 
 This will download all necessary components and compile them. Once done,
 the toolchain (with Xtensa HAL library) will be available in xtensa-lx106-elf/
-directory. Add its bin/ subdirectory to execute "xtensa-lx106-elf-gcc"
+directory. Add its bin/ subdirectory to PATH to execute "xtensa-lx106-elf-gcc"
 and other tools.
 
 ESP8266 SDK will be installed in sdk/. If you chose non-standalone SDK, to use it,
