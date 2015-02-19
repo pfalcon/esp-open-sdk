@@ -26,6 +26,9 @@ OpenSource components of the SDK are based on:
 * Contiki, http://www.contiki-os.org/
 * axTLS, http://axtls.sourceforge.net/
 * wpa_supplicant, http://w1.fi/wpa_supplicant/ (source withheld by Espressif)
+* net80211/ieee80211 (FreeBSD WiFi stack),
+  http://www.unix.com/man-page/freebsd/9/NET80211
+  (source withheld by Espressif)
 
 Building
 ========
