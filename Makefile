@@ -15,6 +15,10 @@ VENDOR_SDK_ZIP_0.9.3 = esp_iot_sdk_v0.9.3_14_11_21.zip
 VENDOR_SDK_DIR_0.9.3 = esp_iot_sdk_v0.9.3
 VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
+
+VENDOR_SDK_ZIP_RTOS = esp_iot_rtos_sdk-master.zip
+VENDOR_SDK_DIR_RTOS = esp_iot_rtos_sdk-master
+
 STANDALONE = y
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
@@ -68,6 +72,11 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
+.sdk_patch_RTOS: esp_iot_rtos_sdk_lib-master.zip esp_iot_rtos_sdk-master/.dir
+	$(UNZIP) $<
+	mv esp_iot_rtos_sdk_lib-master/lib/*.a $(VENDOR_SDK_DIR)/lib/
+	@touch $@
+
 standalone: sdk sdk_patch toolchain
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers into toolchain sysroot"
@@ -85,6 +94,9 @@ esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=73"
 sdk095_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=190"
+esp_iot_rtos_sdk_lib-master.zip:
+	wget "https://github.com/espressif/esp_iot_rtos_sdk_lib/archive/master.zip" -O \
+			"esp_iot_rtos_sdk_lib-master.zip"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
@@ -105,6 +117,10 @@ esp_iot_sdk_v0.9.3_14_11_21.zip:
 
 esp_iot_sdk_v0.9.2_14_10_24.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
+
+esp_iot_rtos_sdk-master.zip:
+	wget "https://github.com/espressif/esp_iot_rtos_sdk/archive/master.zip" -O \
+			"esp_iot_rtos_sdk-master.zip"
 
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
