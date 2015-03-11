@@ -8,3 +8,6 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/themadinventor/esptool
+[submodule "esptool-ck"]
+	path = esptool-ck
+	url = https://github.com/igrr/esptool-ck.git
