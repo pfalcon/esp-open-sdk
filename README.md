@@ -43,6 +43,18 @@ $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python sed
 ```
 
+In addition to the development tools MacoOS X needs a case-sensitive filesystem. You might need to create a virtual disk. Run:
+```
+brew tap homebrew/dupes
+brew reinstall binutils coreutils automake wget gawk libtool gperf gnu-sed --with-default-names grep
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+
+hdiutil create ~/Documents/case-sensitive.dmg -volname "case-sensitive" -size 10g -fs "Case-sensitive HFS+"
+hdiutil mount ~/Documents/case-sensitive.dmg
+cd /Volumes/case-sensitive
+git clone http://github.com/pfalcon/esp-open-sdk.git
+cd esp-open-sdk
+```
 For other Debian/Ubuntu versions, dependencies may be somewhat different.
 E.g. you may need to install libtool-bin, etc.
 
