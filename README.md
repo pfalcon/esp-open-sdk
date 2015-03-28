@@ -45,8 +45,8 @@ $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
 
 ## MacOS:
 ```bash
-$ sudo brew tap homebrew/dupes
-$ sudo brew install binutils coreutils automake wget gawk libtool gperf gnu-sed grep
+$ brew tap homebrew/dupes
+$ brew install binutils coreutils automake wget gawk libtool gperf gnu-sed --with-default-names grep
 $ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
