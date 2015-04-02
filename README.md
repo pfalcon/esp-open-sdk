@@ -108,7 +108,7 @@ The extra -I and -L flags are not needed when using the standalone SDK.
 
 Pulling updates
 ===============
-The project is updated from time to time, to update and prepare to
+The project is updated from time to time, to get updates and prepare to
 build a new SDK, run:
 
 ```
