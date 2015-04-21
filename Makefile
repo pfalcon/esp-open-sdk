@@ -7,6 +7,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.0.1b2 = esp_iot_sdk_v1.0.1_b2_15_04_10.zip
+VENDOR_SDK_DIR_1.0.1b2 = esp_iot_sdk_v1.0.1_b2
 VENDOR_SDK_ZIP_1.0.1b1 = esp_iot_sdk_v1.0.1_b1_15_04_02.zip
 VENDOR_SDK_DIR_1.0.1b1 = esp_iot_sdk_v1.0.1_b1
 VENDOR_SDK_ZIP_1.0.0 = esp_iot_sdk_v1.0.0_15_03_20.zip
@@ -53,6 +55,12 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
+
+.sdk_patch_1.0.1b2: libssl.zip esp_iot_sdk_v1.0.1_b2/.dir
+	$(UNZIP) $<
+	mv libssl/libssl.a $(VENDOR_SDK_DIR_1.0.1b2)/lib/
+	patch -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < c_types-c99.patch
+	@touch $@
 
 .sdk_patch_1.0.1b1:
 	patch -d $(VENDOR_SDK_DIR_1.0.1b1) -p1 < c_types-c99.patch
@@ -103,6 +111,8 @@ esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=73"
 sdk095_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=190"
+libssl.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=316"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
@@ -111,6 +121,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v1.0.1_b2_15_04_10.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=293"
 
 esp_iot_sdk_v1.0.1_b1_15_04_02.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=276"
