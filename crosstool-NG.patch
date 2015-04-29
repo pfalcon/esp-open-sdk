@@ -1,0 +1,23 @@
+diff --git crosstool-NG/scripts/crosstool-NG.sh.in crosstool-NG/scripts/crosstool-NG.sh.in
+--- a/scripts/crosstool-NG.sh.in
++++ b/scripts/crosstool-NG.sh.in
+@@ -84,14 +84,14 @@
+ 
+ # Where will we work?
+-CT_WORK_DIR="${CT_WORK_DIR:-${CT_TOP_DIR}/.build}"
+-CT_DoExecLog ALL mkdir -p "${CT_WORK_DIR}"
+-CT_DoExecLog DEBUG rm -f "${CT_WORK_DIR}/backtrace"
++# CT_WORK_DIR="${CT_WORK_DIR:-${CT_TOP_DIR}/.build}"
++# CT_DoExecLog ALL mkdir -p "${CT_WORK_DIR}"
++# CT_DoExecLog DEBUG rm -f "${CT_WORK_DIR}/backtrace"
+ 
+ # Check build file system case-sensitiveness
+-CT_DoExecLog DEBUG touch "${CT_WORK_DIR}/foo"
+-CT_TestAndAbort "Your file system in '${CT_WORK_DIR}' is *not* case-sensitive!" -f "${CT_WORK_DIR}/FOO"
+-CT_DoExecLog DEBUG rm -f "${CT_WORK_DIR}/foo"
++# CT_DoExecLog DEBUG touch "${CT_WORK_DIR}/foo"
++# CT_TestAndAbort "Your file system in '${CT_WORK_DIR}' is *not* case-sensitive!" -f "${CT_WORK_DIR}/FOO"
++# CT_DoExecLog DEBUG rm -f "${CT_WORK_DIR}/foo"
+ 
+ # Check the user is using an existing SHELL to be used by ./configure and Makefiles
+ CT_TestOrAbort "The CONFIG_SHELL '${CT_CONFIG_SHELL}' is not valid" -f "${CT_CONFIG_SHELL}" -a -x "${CT_CONFIG_SHELL}"

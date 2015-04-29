@@ -179,11 +179,14 @@ _toolchain:
 	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
 
-
-crosstool-NG: crosstool-NG/ct-ng
+crosstool-NG: .ng_patch crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	make -C crosstool-NG -f ../Makefile _ct-ng
+
+.ng_patch: crosstool-NG.patch
+	patch -d crosstool-NG -p 1 < crosstool-NG.patch
+	@touch $@
 
 _ct-ng:
 	./bootstrap
