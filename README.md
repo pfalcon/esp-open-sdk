@@ -43,19 +43,20 @@ $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python sed
 ```
 
-## MacOS:
+## MacOS with Brew:
 ```bash
 $ brew tap homebrew/dupes
 $ brew install binutils coreutils automake wget gawk libtool gperf gnu-sed --with-default-names grep
 $ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
-In addition to the development tools MacOS needs a case-sensitive filesystem.
-You might need to create a virtual disk and build esp-open-sdk on it:
+## MacOS with Mac Ports:
 ```bash
-$ sudo hdiutil create ~/Documents/case-sensitive.dmg -volname "case-sensitive" -size 10g -fs "Case-sensitive HFS+"
-$ sudo hdiutil mount ~/Documents/case-sensitive.dmg
-$ cd /Volumes/case-sensitive
+$ sudo port install gsed gawk
+$ sudo mkdir /opt/local/gnubin
+$ sudo ln /opt/local/bin/gsed /opt/local/gnubin/sed
+$ sudo ln /opt/local/bin/gawk /opt/local/gnubin/awk
+$ export PATH="/opt/local/gnubin:$PATH"
 ```
 
 For other Debian/Ubuntu versions, dependencies may be somewhat different.
