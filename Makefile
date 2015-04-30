@@ -181,7 +181,7 @@ _toolchain:
 
 crosstool-NG: .ng_patch crosstool-NG/ct-ng
 
-crosstool-NG/ct-ng: crosstool-NG/bootstrap
+crosstool-NG/ct-ng: crosstool-NG/bootstrap .ng_patch
 	make -C crosstool-NG -f ../Makefile _ct-ng
 
 .ng_patch: crosstool-NG.patch
