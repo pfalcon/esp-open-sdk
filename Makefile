@@ -58,7 +58,9 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.0.1:
+.sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
+	$(UNZIP) $<
+	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
 	patch -d $(VENDOR_SDK_DIR_1.0.1) -p1 < c_types-c99.patch
 	@touch $@
 
@@ -119,6 +121,8 @@ sdk095_patch1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=190"
 libssl.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=316"
+libnet80211.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=361"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
