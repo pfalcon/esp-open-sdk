@@ -61,36 +61,36 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 .sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
 	$(UNZIP) $<
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
-	patch -d $(VENDOR_SDK_DIR_1.0.1) -p1 < c_types-c99.patch
+	patch -N -f -d $(VENDOR_SDK_DIR_1.0.1) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.1b2: libssl.zip esp_iot_sdk_v1.0.1_b2/.dir
 	$(UNZIP) $<
 	mv libssl/libssl.a $(VENDOR_SDK_DIR_1.0.1b2)/lib/
-	patch -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.1b1:
-	patch -d $(VENDOR_SDK_DIR_1.0.1b1) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_1.0.1b1) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.0:
-	patch -d $(VENDOR_SDK_DIR_1.0.0) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_1.0.0) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.6b1:
-	patch -d $(VENDOR_SDK_DIR_0.9.6b1) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_0.9.6b1) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.5: sdk095_patch1.zip esp_iot_sdk_v0.9.5/.dir
 	$(UNZIP) $<
 	mv libmain_fix_0.9.5.a $(VENDOR_SDK_DIR)/lib/libmain.a
 	mv user_interface.h $(VENDOR_SDK_DIR)/include/
-	patch -d $(VENDOR_SDK_DIR_0.9.5) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_0.9.5) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.4:
-	patch -d $(VENDOR_SDK_DIR_0.9.4) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_0.9.4) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_0.9.3: esp_iot_sdk_v0.9.3_14_11_21_patch1.zip esp_iot_sdk_v0.9.3/.dir
