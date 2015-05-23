@@ -60,6 +60,10 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_1.1.0:
+	patch -N -f -d $(VENDOR_SDK_DIR_1.1.0) -p1 < c_types-c99.patch
+	@touch $@
+
 .sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
 	$(UNZIP) $<
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
