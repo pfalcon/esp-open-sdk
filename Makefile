@@ -103,7 +103,7 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	$(UNZIP) $<
 	@touch $@
 
-.sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir 
+.sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir
 	unrar x -o+ $<
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
