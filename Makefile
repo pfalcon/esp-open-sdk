@@ -63,9 +63,13 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.1.0:
+.sdk_patch_1.1.0: empty_user_rf_pre_init.o
 	patch -N -f -d $(VENDOR_SDK_DIR_1.1.0) -p1 < c_types-c99.patch
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
+
+empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
 .sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
 	$(UNZIP) $<
