@@ -7,8 +7,11 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
-VENDOR_SDK_ZIP_1.1.0 = esp_iot_sdk_v1.1.0_15_05_22.zip
+VENDOR_SDK_ZIP_1.1.0 = esp_iot_sdk_v1.1.0_15_05_26.zip
 VENDOR_SDK_DIR_1.1.0 = esp_iot_sdk_v1.1.0
+# MIT-licensed version was released without changing version number
+#VENDOR_SDK_ZIP_1.1.0 = esp_iot_sdk_v1.1.0_15_05_22.zip
+#VENDOR_SDK_DIR_1.1.0 = esp_iot_sdk_v1.1.0
 VENDOR_SDK_ZIP_1.0.1 = esp_iot_sdk_v1.0.1_15_04_24.zip
 VENDOR_SDK_DIR_1.0.1 = esp_iot_sdk_v1.0.1
 VENDOR_SDK_ZIP_1.0.1b2 = esp_iot_sdk_v1.0.1_b2_15_04_10.zip
@@ -137,6 +140,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v1.1.0_15_05_26.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=425"
 
 esp_iot_sdk_v1.1.0_15_05_22.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=423"
