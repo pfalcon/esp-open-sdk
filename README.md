@@ -40,7 +40,8 @@ tools installed: gcc, binutils, flex, bison, etc.
 ## Ubuntu 14.04
 ```
 $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
-    flex bison texinfo gawk ncurses-dev libexpat-dev python sed
+    flex bison texinfo gawk ncurses-dev libexpat-dev python sed python-serial \
+    git
 ```
 
 ## MacOS:
@@ -127,3 +128,8 @@ Additional configuration
 You can build a statically linked toolchain by uncommenting
 `CT_STATIC_TOOLCHAIN=y` in the file `crosstool-config-overrides`. More
 fine-tunable options may be available in that file and/or Makefile.
+
+Testing your enviroment
+=======================
+There are several opensource examples out there, but you can clone one of these repos to verify your fresh new installation
+https://github.com/esp8266/source-code-examples
