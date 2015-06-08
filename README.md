@@ -43,6 +43,12 @@ $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python sed
 ```
 
+## Fedora 22
+```
+$ sudo dnf install make unrar autoconf automake libtool gcc gcc-c++ gperf \
+   flex bison texinfo gawk ncurses-devel expat-devel python sed
+```
+
 ## MacOS:
 ```bash
 $ brew tap homebrew/dupes
