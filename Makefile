@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.1.0
+VENDOR_SDK = 1.1.1
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.1.1 = esp_iot_sdk_v1.1.1_15_06_05.zip
+VENDOR_SDK_DIR_1.1.1 = esp_iot_sdk_v1.1.1
 VENDOR_SDK_ZIP_1.1.0 = esp_iot_sdk_v1.1.0_15_05_26.zip
 VENDOR_SDK_DIR_1.1.0 = esp_iot_sdk_v1.1.0
 # MIT-licensed version was released without changing version number
@@ -62,6 +64,11 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
+
+.sdk_patch_1.1.1: empty_user_rf_pre_init.o
+	patch -N -f -d $(VENDOR_SDK_DIR_1.1.1) -p1 < c_types-c99.patch
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a empty_user_rf_pre_init.o
+	@touch $@
 
 .sdk_patch_1.1.0: lib_patch_on_sdk_v1.1.0.zip empty_user_rf_pre_init.o
 	$(UNZIP) $<
@@ -150,6 +157,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v1.1.1_15_06_05.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=484"
 
 esp_iot_sdk_v1.1.0_15_05_26.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=425"
