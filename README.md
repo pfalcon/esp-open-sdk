@@ -127,3 +127,23 @@ Additional configuration
 You can build a statically linked toolchain by uncommenting
 `CT_STATIC_TOOLCHAIN=y` in the file `crosstool-config-overrides`. More
 fine-tunable options may be available in that file and/or Makefile.
+
+License
+=======
+
+esp-open-sdk is in its nature merely a makefile, and is in public domain.
+However, the toolchain this makefile builds consists of many components,
+each having its own license. You should study and abide them all.
+
+Quick summary: gcc is under GPL, which means that if you're distributing
+a toolchain binary you must be ready to provide complete toolchain sources
+on the first request.
+
+Since version 1.1.0, vendor SDK comes under modified MIT license. Newlib,
+used as C library comes with variety of BSD-like licenses. libgcc, compiler
+support library, comes with a linking exception. All the above means that
+for applications compiled with this toolchain, there are no specific
+requirements regarding source availability of the application or toolchain.
+(In other words, you can use it to build closed-source applications).
+(There're however standard attribution requirements - see licences for
+details).
