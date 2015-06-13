@@ -247,6 +247,7 @@ crosstool-NG/bootstrap:
 
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
+	-rm -rf crosstool-NG/.build/src
 	-rm -rf $(TOOLCHAIN)
 
 clean-sdk:
