@@ -30,8 +30,9 @@ OpenSource components of the SDK are based on:
   http://www.unix.com/man-page/freebsd/9/NET80211
   (source withheld by Espressif)
 
-Building
-========
+
+Requirements and Dependencies
+=============================
 
 To build the standalone SDK and toolchain, you need a GNU/POSIX system
 (Linux, BSD, MacOSX, Windows with Cygwin) with the standard GNU development
@@ -66,8 +67,14 @@ $ sudo hdiutil mount ~/Documents/case-sensitive.dmg
 $ cd /Volumes/case-sensitive
 ```
 
-For other Debian/Ubuntu versions, dependencies may be somewhat different.
-E.g. you may need to install libtool-bin, etc.
+Building
+========
+
+Be sure to clone recursively:
+
+```
+$ git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
+```
 
 The project can be built in two modes:
 
