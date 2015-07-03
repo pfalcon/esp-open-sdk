@@ -37,11 +37,18 @@ To build the standalone SDK and toolchain, you need a GNU/POSIX system
 (Linux, BSD, MacOSX, Windows with Cygwin) with the standard GNU development
 tools installed: gcc, binutils, flex, bison, etc.
 
-## Ubuntu 14.04
+## Debian/Ubuntu
+
+Ubuntu 14.04:
 ```
 $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python python-serial sed \
     git
+```
+
+Later Debian/Ubuntu versions may require:
+```
+$ sudo apt-get libtool-bin
 ```
 
 ## MacOS:
