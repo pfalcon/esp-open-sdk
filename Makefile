@@ -67,7 +67,9 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.1.2: empty_user_rf_pre_init.o
+.sdk_patch_1.1.2: scan_issue_test.zip empty_user_rf_pre_init.o
+	$(UNZIP) $<
+	mv libmain.a libnet80211.a $(VENDOR_SDK_DIR_1.1.2)/lib/
 	patch -N -f -d $(VENDOR_SDK_DIR_1.1.2) -p1 < c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.2)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
@@ -156,6 +158,8 @@ libnet80211.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=361"
 lib_patch_on_sdk_v1.1.0.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=432"
+scan_issue_test.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=525"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
