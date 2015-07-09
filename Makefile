@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.1.2
+VENDOR_SDK = 1.2.0
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.2.0 = esp_iot_sdk_v1.2.0_15_07_03.zip
+VENDOR_SDK_DIR_1.2.0 = esp_iot_sdk_v1.2.0
 VENDOR_SDK_ZIP_1.1.2 = esp_iot_sdk_v1.1.2_15_06_12.zip
 VENDOR_SDK_DIR_1.1.2 = esp_iot_sdk_v1.1.2
 VENDOR_SDK_ZIP_1.1.1 = esp_iot_sdk_v1.1.1_15_06_05.zip
@@ -66,6 +68,15 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
+
+.sdk_patch_1.2.0: libssl_patch_1.2.0.zip libsmartconfig_2.4.2.zip empty_user_rf_pre_init.o
+	$(UNZIP) libssl.zip
+	$(UNZIP) libsmartconfig_2.4.2.zip
+	mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
+	mv libssl.a $(VENDOR_SDK_DIR_1.2.0)/lib/
+	patch -N -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < c_types-c99.patch
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
+	@touch $@
 
 .sdk_patch_1.1.2: scan_issue_test.zip 1.1.2_patch_02.zip empty_user_rf_pre_init.o
 	$(UNZIP) scan_issue_test.zip
@@ -163,6 +174,10 @@ scan_issue_test.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=525"
 1.1.2_patch_02.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=546"
+libssl_patch_1.2.0.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=583"
+libsmartconfig_2.4.2.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=585"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
@@ -171,7 +186,10 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
-	
+
+esp_iot_sdk_v1.2.0_15_07_03.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=564"
+
 esp_iot_sdk_v1.1.2_15_06_12.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=521"
 
