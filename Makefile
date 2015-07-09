@@ -69,8 +69,8 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.2.0: libssl_patch_1.2.0-1.zip libsmartconfig_2.4.2.zip empty_user_rf_pre_init.o
-	$(UNZIP) libssl_patch_1.2.0-1.zip
+.sdk_patch_1.2.0: libssl_patch_1.2.0-2.zip libsmartconfig_2.4.2.zip empty_user_rf_pre_init.o
+	$(UNZIP) libssl_patch_1.2.0-2.zip
 	$(UNZIP) libsmartconfig_2.4.2.zip
 	mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
 	mv libssl.a $(VENDOR_SDK_DIR_1.2.0)/lib/
@@ -176,6 +176,8 @@ scan_issue_test.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=546"
 libssl_patch_1.2.0-1.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=583" -O $@
+libssl_patch_1.2.0-2.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=586" -O $@
 libsmartconfig_2.4.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=585"
 
