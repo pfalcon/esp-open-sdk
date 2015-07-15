@@ -69,11 +69,9 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.2.0: libssl_patch_1.2.0-2.zip libsmartconfig_2.4.2.zip empty_user_rf_pre_init.o
-	$(UNZIP) libssl_patch_1.2.0-2.zip
-	$(UNZIP) libsmartconfig_2.4.2.zip
-	mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
-	mv libssl.a $(VENDOR_SDK_DIR_1.2.0)/lib/
+.sdk_patch_1.2.0: lib_mem_optimize_150714.zip empty_user_rf_pre_init.o
+	$(UNZIP) lib_mem_optimize_150714.zip
+	mv libnet80211.a libpp.a libsmartconfig.a libssl.a $(VENDOR_SDK_DIR_1.2.0)/lib/
 	patch -N -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
@@ -180,6 +178,8 @@ libssl_patch_1.2.0-2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=586" -O $@
 libsmartconfig_2.4.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=585"
+lib_mem_optimize_150714.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
