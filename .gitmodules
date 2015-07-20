@@ -7,4 +7,4 @@
 	url = https://github.com/tommie/lx106-hal
 [submodule "esptool"]
 	path = esptool
-	url = https://github.com/themadinventor/esptool
+	url = https://github.com/pfalcon/esptool
