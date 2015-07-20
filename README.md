@@ -129,6 +129,7 @@ build a new SDK, run:
 ```
 $ make clean
 $ git pull
+$ git submodule sync
 $ git submodule update
 ```
 
