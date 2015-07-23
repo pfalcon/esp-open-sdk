@@ -49,7 +49,7 @@ $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
 
 Later Debian/Ubuntu versions may require:
 ```
-$ sudo apt-get libtool-bin
+$ sudo apt-get install libtool-bin
 ```
 
 ## MacOS:
