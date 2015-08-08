@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.2.0
+VENDOR_SDK = 1.3.0
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.3.0 = esp_iot_sdk_v1.3.0_15_08_08.zip
+VENDOR_SDK_DIR_1.3.0 = esp_iot_sdk_v1.3.0
 VENDOR_SDK_ZIP_1.2.0 = esp_iot_sdk_v1.2.0_15_07_03.zip
 VENDOR_SDK_DIR_1.2.0 = esp_iot_sdk_v1.2.0
 VENDOR_SDK_ZIP_1.1.2 = esp_iot_sdk_v1.1.2_15_06_12.zip
@@ -191,6 +193,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v1.3.0_15_08_08.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=664"
 
 esp_iot_sdk_v1.2.0_15_07_03.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=564"
