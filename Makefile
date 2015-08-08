@@ -71,6 +71,10 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_1.3.0:
+	patch -N -d $(VENDOR_SDK_DIR_1.3.0) -p1 < c_types-c99.patch
+	@touch $@
+
 .sdk_patch_1.2.0: lib_mem_optimize_150714.zip libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
 	#$(UNZIP) libssl_patch_1.2.0-2.zip
 	#$(UNZIP) libsmartconfig_2.4.2.zip
