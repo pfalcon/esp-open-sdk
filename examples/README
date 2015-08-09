@@ -1,0 +1,8 @@
+This directory contains simple examples/tests to use esp-open-sdk.
+The directory would contain complete source for examples, but so far
+examples with suitable OpenSource licensing were not found. So, this
+directory contains just Makefiles for examples available elsewhere.
+
+If you know about good examples to be included here with explicit
+licensing terms (public domain is recommended, otherwise MIT/BSD is
+OK), please let a maintainer know.
