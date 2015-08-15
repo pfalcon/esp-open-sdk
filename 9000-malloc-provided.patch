@@ -1,0 +1,10 @@
+--- a/newlib/configure.host	2015-08-14 16:31:23.033541019 +0000
++++ b/newlib/configure.host	2015-08-14 16:31:28.757594282 +0000
+@@ -286,6 +286,7 @@
+ 	libm_machine_dir=xtensa
+ 	machine_dir=xtensa
+ 	newlib_cflags="${newlib_cflags} -mlongcalls"
++	newlib_cflags="${newlib_cflags} -DMALLOC_PROVIDED"
+ 	newlib_cflags="${newlib_cflags} -DREENTRANT_SYSCALLS_PROVIDED"
+         ;;
+   z8k)

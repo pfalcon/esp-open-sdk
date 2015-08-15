@@ -271,6 +271,7 @@ _toolchain:
 crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
+	cp 9000-malloc-provided.patch crosstool-NG/local-patches/newlib/2.0.0
 	make -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:
