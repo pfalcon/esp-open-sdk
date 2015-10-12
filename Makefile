@@ -74,7 +74,7 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 esp_iot_sdk_v%/examples/lwip: lwip_open_src_template_proj_for_v%.zip
 	mkdir $@
 	$(UNZIP) -d $@ $<
-	sed -i "s/\bsint16_t\b/int16_t/g" $@/lwip_open_src_template*/lwip/app/*.c $@/lwip_open_src_template*/include/lwip/app/*.h $@/lwip_open_src_template*/include/lwip/app/*.h
+	sed -i "s/\bsint16_t\b/int16_t/g" $@/lwip_open_src_template*/lwip/app/*.c $@/lwip_open_src_template*/include/lwip/app/*.h 
 	mkdir $@/bin
 	ln -s ../../include $@/include 
 	ln -s ../../ld $@/ld 
