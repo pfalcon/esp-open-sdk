@@ -83,7 +83,8 @@ esp_iot_sdk_v%/examples/lwip: lwip_open_src_template_proj_for_v%.zip
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.4.0: $(VENDOR_SDK_DIR_1.4.0)/examples/lwip empty_user_rf_pre_init.o
+.sdk_patch_1.4.0: $(VENDOR_SDK_DIR_1.4.0)/examples/lwip user_interface_for_lwip_v1.4.0.zip empty_user_rf_pre_init.o
+	$(UNZIP) -o -d esp_iot_sdk_v1.4.0/include user_interface_for_lwip_v1.4.0.zip
 	patch -N -d $(VENDOR_SDK_DIR_1.4.0) -p1 < c_types-c99.patch
 	@touch $@
 
@@ -217,8 +218,11 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 esp_iot_sdk_v1.4.0_15_09_18.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=838"
 
+user_interface_for_lwip_v1.4.0.zip:
+	wget --content-disposition -O "$@" "http://bbs.espressif.com/download/file.php?id=885"  
+
 lwip_open_src_template_proj_for_v1.4.0.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=873" 
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=886" 
 
 esp_iot_sdk_v1.3.0_15_08_08.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=664"
