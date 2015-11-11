@@ -38,6 +38,9 @@ To build the standalone SDK and toolchain, you need a GNU/POSIX system
 (Linux, BSD, MacOSX, Windows with Cygwin) with the standard GNU development
 tools installed: gcc, binutils, flex, bison, etc.
 
+Please make sure that the machine you use to build the toolchain has at least
+1G free RAM+swap (or more, which will speed up the build).
+
 ## Debian/Ubuntu
 
 Ubuntu 14.04:
