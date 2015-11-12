@@ -1,0 +1,12 @@
+--- a/newlib/configure.host	2015-11-12 14:04:48.064467034 +0000
++++ b/newlib/configure.host	2015-11-12 14:07:45.645532708 +0000
+@@ -285,7 +285,8 @@
+   xtensa)
+ 	libm_machine_dir=xtensa
+ 	machine_dir=xtensa
+-	newlib_cflags="${newlib_cflags} -mlongcalls"
++	newlib_cflags="${newlib_cflags} -mlongcalls -ffunction-sections -mtext-section-literals -Os"
++	newlib_cflags="${newlib_cflags} -DMALLOC_PROVIDED"
+ 	newlib_cflags="${newlib_cflags} -DREENTRANT_SYSCALLS_PROVIDED"
+         ;;
+   z8k)
