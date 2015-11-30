@@ -1,12 +1,16 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.4.0
+VENDOR_SDK = 1.5.0
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.5.0 = esp_iot_sdk_v1.5.0_15_11_27.zip
+VENDOR_SDK_DIR_1.5.0 = esp_iot_sdk_v1.5.0
+VENDOR_SDK_ZIP_1.4.1 = esp_iot_sdk_v1.4.1_pre5_15_10_27.zip
+VENDOR_SDK_DIR_1.4.1 = esp_iot_sdk_v1.4.1_pre5
 VENDOR_SDK_ZIP_1.4.0 = esp_iot_sdk_v1.4.0_15_09_18.zip
 VENDOR_SDK_DIR_1.4.0 = esp_iot_sdk_v1.4.0
 VENDOR_SDK_ZIP_1.3.0 = esp_iot_sdk_v1.3.0_15_08_08.zip
@@ -42,9 +46,12 @@ VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 STANDALONE = y
 
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
+.PHONY: crosstool-NG toolchain libhal sdk
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+LIBHAL := $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
+LIBGCC := $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/4.8.2/libgcc.a
+
+all: esptool standalone sdk .sdk_patch $(LIBHAL) $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -64,14 +71,22 @@ endif
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	@echo "Creating irom version of libc..."
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
-		--rename-section .literal=.irom0.literal $(<) $(@);
+.sdk_patch: .sdk_patch_$(VENDOR_SDK) $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	for l in sdk/lib/lib*.a; do \
+		$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
+			--rename-section .text=.fast.text \
+			--rename-section .irom0.text=.text \
+			$$l; \
+	done
+	@touch $@
 
-libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
+.sdk_patch_1.5.0:
+	patch -N -d $(VENDOR_SDK_DIR_1.5.0) -p1 < c_types-c99.patch
+	@touch $@
 
-sdk_patch: .sdk_patch_$(VENDOR_SDK)
+.sdk_patch_1.4.1:
+	patch -N -d $(VENDOR_SDK_DIR_1.4.1) -p1 < c_types-c99.patch
+	@touch $@
 
 .sdk_patch_1.4.0:
 	patch -N -d $(VENDOR_SDK_DIR_1.4.0) -p1 < c_types-c99.patch
@@ -160,7 +175,7 @@ empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
-standalone: sdk sdk_patch toolchain
+standalone: sdk .sdk_patch toolchain
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers into toolchain sysroot"
 	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
@@ -203,6 +218,12 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+esp_iot_sdk_v1.5.0_15_11_27.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
+
+esp_iot_sdk_v1.4.1_pre5_15_10_27.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=917"
 
 esp_iot_sdk_v1.4.0_15_09_18.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=838"
@@ -252,10 +273,16 @@ esp_iot_sdk_v0.9.3_14_11_21.zip:
 esp_iot_sdk_v0.9.2_14_10_24.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
 
-libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
+libhal: $(LIBHAL) .patch_libhal
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+$(LIBHAL): $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	make -C lx106-hal -f ../Makefile _libhal
+
+.patch_libhal: $(LIBHAL)
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
+		--rename-section .text=.fast.text \
+		$(LIBHAL)
+	@touch $@
 
 _libhal:
 	autoreconf -i
@@ -264,22 +291,31 @@ _libhal:
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
 
 
-toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc .patch_libgcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	make -C crosstool-NG -f ../Makefile _toolchain
+
+.patch_libgcc: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
+		--rename-section .text=.fast.text \
+		$(LIBGCC)
+	@touch $@
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
+	rm -f local-patches/gdb/7.5.1/*
+	cp ../0000-gdb-7.5.1-sysprogs.patch local-patches/gdb/7.5.1
 	./ct-ng build
 
 
 crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
+	cp *-newlib-*.patch crosstool-NG/local-patches/newlib/2.0.0
 	make -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:
