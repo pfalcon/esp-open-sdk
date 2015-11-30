@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.4.1
+VENDOR_SDK = 1.5.0
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.5.0 = esp_iot_sdk_v1.5.0_15_11_27.zip
+VENDOR_SDK_DIR_1.5.0 = esp_iot_sdk_v1.5.0
 VENDOR_SDK_ZIP_1.4.1 = esp_iot_sdk_v1.4.1_pre5_15_10_27.zip
 VENDOR_SDK_DIR_1.4.1 = esp_iot_sdk_v1.4.1_pre5
 VENDOR_SDK_ZIP_1.4.0 = esp_iot_sdk_v1.4.0_15_09_18.zip
@@ -76,6 +78,10 @@ esptool: toolchain
 			--rename-section .irom0.text=.text \
 			$$l; \
 	done
+	@touch $@
+
+.sdk_patch_1.5.0:
+	patch -N -d $(VENDOR_SDK_DIR_1.5.0) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.4.1:
@@ -213,6 +219,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
+esp_iot_sdk_v1.5.0_15_11_27.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
+
 esp_iot_sdk_v1.4.1_pre5_15_10_27.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=917"
 
@@ -298,6 +307,8 @@ _toolchain:
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
+	rm -f local-patches/gdb/7.5.1/*
+	cp ../0000-gdb-7.5.1-sysprogs.patch local-patches/gdb/7.5.1
 	./ct-ng build
 
 
