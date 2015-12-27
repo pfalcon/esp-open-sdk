@@ -19,7 +19,7 @@ Cadence Design Systems, Inc, and/or their contractors.
 
 2. ESP8266 IoT SDK from Espressif Systems. This component is only
    partially open source, (some libraries are provided as binary blobs).
-    * http://bbs.espressif.com/viewforum.php?f=5
+    * http://bbs.espressif.com/viewforum.php?f=46
 
 OpenSource components of the SDK are based on:
 * lwIP, http://savannah.nongnu.org/projects/lwip/
