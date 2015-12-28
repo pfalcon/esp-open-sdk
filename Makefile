@@ -1,6 +1,6 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.4.0
+VENDOR_SDK = 1.5.0
 
 UNZIP = unzip -q -o
 
