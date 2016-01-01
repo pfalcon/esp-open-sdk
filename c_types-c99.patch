@@ -1,27 +1,35 @@
 This patch fixes vendor SDK header "c_types.h" for C99 compatibility.
 
-diff -ur esp_iot_sdk_v0.9.4.org/include/c_types.h esp_iot_sdk_v0.9.4/include/c_types.h
---- esp_iot_sdk_v0.9.4.org/include/c_types.h	2014-12-19 18:07:46.000000000 +0200
-+++ esp_iot_sdk_v0.9.4/include/c_types.h	2015-01-17 19:43:49.258975759 +0200
-@@ -6,6 +6,9 @@
+--- esp_iot_sdk_v0.9.4.org/include/c_types.h.orig	2015-08-07 19:56:56.000000000 +0300
++++ esp_iot_sdk_v0.9.4.org/include/c_types.h	2015-12-30 02:23:54.605439011 +0200
+@@ -6,17 +6,19 @@
  #ifndef _C_TYPES_H_
  #define _C_TYPES_H_
  
+-typedef unsigned char       uint8_t;
 +#include <stdint.h>
 +#include <stdbool.h>
-+#if 0
- typedef unsigned char       uint8_t;
++//typedef unsigned char       uint8_t;
  typedef signed char         sint8_t;
- typedef signed char         int8_t;
-@@ -20,6 +23,7 @@
+-typedef signed char         int8_t;
+-typedef unsigned short      uint16_t;
++//typedef signed char         int8_t;
++//typedef unsigned short      uint16_t;
+ typedef signed short        sint16_t;
+-typedef signed short        int16_t;
+-typedef unsigned long       uint32_t;
++//typedef signed short        int16_t;
++//typedef unsigned long       uint32_t;
+ typedef signed long         sint32_t;
+-typedef signed long         int32_t;
++//typedef signed long         int32_t;
+ typedef signed long long    sint64_t;
+-typedef unsigned long long  uint64_t;
++//typedef unsigned long long  uint64_t;
  typedef unsigned long long  u_int64_t;
  typedef float               real32_t;
  typedef double              real64_t;
-+#endif
- 
- typedef unsigned char       uint8;
- typedef unsigned char       u8;
-@@ -78,10 +82,10 @@
+@@ -80,10 +82,10 @@
  #endif /* ICACHE_FLASH */
  
  #ifndef __cplusplus
