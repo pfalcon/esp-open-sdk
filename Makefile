@@ -132,7 +132,7 @@ _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
-	cat ../crosstool-config-overrides >> .config
+	cat ../patches/crosstool-config-overrides >> .config
 	./ct-ng build
 
 $(DWNLOAD)/.dir:
@@ -197,16 +197,16 @@ $(VENDOR_SDK_DIR)/.sdk_unzip: $(DWNLOAD)/$(VENDOR_SDK_ZIP)
 sdk_patch: $(VENDOR_SDK_DIR)/.sdk_patch
 
 $(VENDOR_SDK_DIR_1.5.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.5.0)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.5.0) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.5.0) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.4.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.4.0)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.4.0) -p1 < c_types-c99.patch
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.4.0) -p1 < dhcps_lease.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.4.0) -p1 < patches/c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.4.0) -p1 < patches/dhcps_lease.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.3.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.3.0)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.3.0) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.3.0) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
@@ -215,7 +215,7 @@ $(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD
 	$(UNZIP) $(DWNLOAD)/lib_mem_optimize_150714.zip
 	#mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
 	mv libssl.a libnet80211.a libpp.a libsmartconfig.a $(VENDOR_SDK_DIR_1.2.0)/lib/
-	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < c_types-c99.patch
+	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < patches/c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
@@ -223,12 +223,12 @@ $(VENDOR_SDK_DIR_1.1.2)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.2)/.sdk_unzip $(DWNLOAD
 	$(UNZIP) scan_issue_test.zip
 	$(UNZIP) 1.1.2_patch_02.zip
 	mv libmain.a libnet80211.a libpp.a $(VENDOR_SDK_DIR_1.1.2)/lib/
-	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.2) -p1 < c_types-c99.patch
+	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.2) -p1 < patches/c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.2)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.1.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.1)/.sdk_unzip empty_user_rf_pre_init.o
-	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.1) -p1 < c_types-c99.patch
+	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.1) -p1 < patches/c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
@@ -237,43 +237,43 @@ $(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip $(DWNLOAD
 	mv libsmartconfig_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libsmartconfig.a
 	mv libmain_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a
 	mv libssl_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libssl.a
-	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.0) -p1 < c_types-c99.patch
+	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.0) -p1 < patches/c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.0.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1)/.sdk_unzip $(DWNLOAD)/libnet80211.zip
 	$(UNZIP) $(DWNLOAD)/libnet80211.zip
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
-	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.0.1) -p1 < c_types-c99.patch
+	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.0.1) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.0.1b2)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1b2)/.sdk_unzip $(DWNLOAD)/libssl.zip
 	$(UNZIP) $(DWNLOAD)/libssl.zip
 	mv libssl/libssl.a $(VENDOR_SDK_DIR_1.0.1b2)/lib/
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.0.1b1)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1b1)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.1b1) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.1b1) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.0.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.0)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.0) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.0) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_0.9.6b1)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.6b1)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.6b1) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.6b1) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_0.9.5)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.5)/.sdk_unzip $(DWNLOAD)/sdk095_patch1.zip
 	$(UNZIP) $(DWNLOAD)/sdk095_patch1.zip
 	mv libmain_fix_0.9.5.a $(VENDOR_SDK_DIR)/lib/libmain.a
 	mv user_interface.h $(VENDOR_SDK_DIR)/include/
-	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.5) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.5) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_0.9.4)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.4)/.sdk_unzip
-	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.4) -p1 < c_types-c99.patch
+	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.4) -p1 < patches/c_types-c99.patch
 	@touch $@
 
 $(VENDOR_SDK_DIR_0.9.3)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.3)/.sdk_unzip $(DWNLOAD)/esp_iot_sdk_v0.9.3_14_11_21_patch1.zip
@@ -286,7 +286,7 @@ $(VENDOR_SDK_DIR_0.9.2)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.2)/.sdk_unzip $(DWNLOAD
 	@touch $@
 
 # Compile object file required by some patches
-empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+empty_user_rf_pre_init.o: patches/empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
 # Download the SDK bundles
