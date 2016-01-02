@@ -1,6 +1,13 @@
 TOP = $(PWD)
+# Directory to install toolchain to, by default inside current dir.
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
+# Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
+# for supported versions.
 VENDOR_SDK = 1.4.0
+# Whether to merge SDK into Xtensa toolchain, producing standalone
+# ESP8266 toolchain. Use 'n' if you want generic Xtensa toolchain
+# which can be used with multiple SDK versions.
+STANDALONE = y
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
@@ -40,7 +47,6 @@ VENDOR_SDK_ZIP_0.9.3 = esp_iot_sdk_v0.9.3_14_11_21.zip
 VENDOR_SDK_DIR_0.9.3 = esp_iot_sdk_v0.9.3
 VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
-STANDALONE = y
 
 UNZIP = unzip -q -o
 PATCH = patch -b -N
