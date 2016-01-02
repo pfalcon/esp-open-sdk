@@ -28,6 +28,7 @@ first: all
 #
 
 TOP = $(PWD)
+DWNLOAD = $(TOP)/download
 PATCH = patch -b -N
 UNRAR = unrar x -o+
 UNZIP = unzip -q -o
@@ -122,7 +123,9 @@ $(TOOLCHAIN)/bin/esptool.py: esptool/esptool.py $(TOOLCHAIN)/bin/xtensa-lx106-el
 # toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
-$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
+$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng $(DWNLOAD)/.dir
+	mkdir -p crosstool-NG/.build
+	ln -srnf $(DWNLOAD) crosstool-NG/.build/tarballs
 	make -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
@@ -131,6 +134,10 @@ _toolchain:
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
+
+$(DWNLOAD)/.dir:
+	mkdir -p $(DWNLOAD)
+	@touch -t 200001010000 $@
 
 clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
@@ -181,7 +188,7 @@ _libhal:
 sdk: $(VENDOR_SDK_DIR)/.sdk_unzip
 	ln -srnf $(VENDOR_SDK_DIR) $(SDKDIR)
 
-$(VENDOR_SDK_DIR)/.sdk_unzip: $(VENDOR_SDK_ZIP)
+$(VENDOR_SDK_DIR)/.sdk_unzip: $(DWNLOAD)/$(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
@@ -202,17 +209,17 @@ $(VENDOR_SDK_DIR_1.3.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.3.0)/.sdk_unzip
 	$(PATCH) -d $(VENDOR_SDK_DIR_1.3.0) -p1 < c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip lib_mem_optimize_150714.zip libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
-	#$(UNZIP) libssl_patch_1.2.0-2.zip
-	#$(UNZIP) libsmartconfig_2.4.2.zip
-	$(UNZIP) lib_mem_optimize_150714.zip
+$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
+	#$(UNZIP) $(DWNLOAD)/libssl_patch_1.2.0-2.zip
+	#$(UNZIP) $(DWNLOAD)/libsmartconfig_2.4.2.zip
+	$(UNZIP) $(DWNLOAD)/lib_mem_optimize_150714.zip
 	#mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
 	mv libssl.a libnet80211.a libpp.a libsmartconfig.a $(VENDOR_SDK_DIR_1.2.0)/lib/
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.1.2)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.2)/.sdk_unzip scan_issue_test.zip 1.1.2_patch_02.zip empty_user_rf_pre_init.o
+$(VENDOR_SDK_DIR_1.1.2)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.2)/.sdk_unzip $(DWNLOAD)/scan_issue_test.zip $(DWNLOAD)/1.1.2_patch_02.zip empty_user_rf_pre_init.o
 	$(UNZIP) scan_issue_test.zip
 	$(UNZIP) 1.1.2_patch_02.zip
 	mv libmain.a libnet80211.a libpp.a $(VENDOR_SDK_DIR_1.1.2)/lib/
@@ -225,8 +232,8 @@ $(VENDOR_SDK_DIR_1.1.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.1)/.sdk_unzip empty_use
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip lib_patch_on_sdk_v1.1.0.zip empty_user_rf_pre_init.o
-	$(UNZIP) lib_patch_on_sdk_v1.1.0.zip
+$(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip $(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip empty_user_rf_pre_init.o
+	$(UNZIP) $(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip
 	mv libsmartconfig_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libsmartconfig.a
 	mv libmain_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a
 	mv libssl_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libssl.a
@@ -234,14 +241,14 @@ $(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip lib_patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.0.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1)/.sdk_unzip libnet80211.zip
-	$(UNZIP) libnet80211.zip
+$(VENDOR_SDK_DIR_1.0.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1)/.sdk_unzip $(DWNLOAD)/libnet80211.zip
+	$(UNZIP) $(DWNLOAD)/libnet80211.zip
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.0.1) -p1 < c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.0.1b2)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1b2)/.sdk_unzip libssl.zip
-	$(UNZIP) libssl.zip
+$(VENDOR_SDK_DIR_1.0.1b2)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1b2)/.sdk_unzip $(DWNLOAD)/libssl.zip
+	$(UNZIP) $(DWNLOAD)/libssl.zip
 	mv libssl/libssl.a $(VENDOR_SDK_DIR_1.0.1b2)/lib/
 	$(PATCH) -d $(VENDOR_SDK_DIR_1.0.1b2) -p1 < c_types-c99.patch
 	@touch $@
@@ -258,8 +265,8 @@ $(VENDOR_SDK_DIR_0.9.6b1)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.6b1)/.sdk_unzip
 	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.6b1) -p1 < c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_0.9.5)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.5)/.sdk_unzip sdk095_patch1.zip
-	$(UNZIP) sdk095_patch1.zip
+$(VENDOR_SDK_DIR_0.9.5)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.5)/.sdk_unzip $(DWNLOAD)/sdk095_patch1.zip
+	$(UNZIP) $(DWNLOAD)/sdk095_patch1.zip
 	mv libmain_fix_0.9.5.a $(VENDOR_SDK_DIR)/lib/libmain.a
 	mv user_interface.h $(VENDOR_SDK_DIR)/include/
 	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.5) -p1 < c_types-c99.patch
@@ -269,12 +276,12 @@ $(VENDOR_SDK_DIR_0.9.4)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.4)/.sdk_unzip
 	$(PATCH) -d $(VENDOR_SDK_DIR_0.9.4) -p1 < c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_0.9.3)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.3)/.sdk_unzip esp_iot_sdk_v0.9.3_14_11_21_patch1.zip
-	$(UNZIP) esp_iot_sdk_v0.9.3_14_11_21_patch1.zip
+$(VENDOR_SDK_DIR_0.9.3)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.3)/.sdk_unzip $(DWNLOAD)/esp_iot_sdk_v0.9.3_14_11_21_patch1.zip
+	$(UNZIP) $(DWNLOAD)/esp_iot_sdk_v0.9.3_14_11_21_patch1.zip
 	@touch $@
 
-$(VENDOR_SDK_DIR_0.9.2)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.2)/.sdk_unzip FRM_ERR_PATCH.rar
-	$(UNRAR) FRM_ERR_PATCH.rar
+$(VENDOR_SDK_DIR_0.9.2)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.2)/.sdk_unzip $(DWNLOAD)/FRM_ERR_PATCH.rar
+	$(UNRAR) $(DWNLOAD)/FRM_ERR_PATCH.rar
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
@@ -283,66 +290,66 @@ empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
 # Download the SDK bundles
-esp_iot_sdk_v1.5.0_15_11_27.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
-esp_iot_sdk_v1.4.0_15_09_18.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=838"
-esp_iot_sdk_v1.3.0_15_08_08.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=664"
-esp_iot_sdk_v1.2.0_15_07_03.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=564"
-esp_iot_sdk_v1.1.2_15_06_12.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=521"
-esp_iot_sdk_v1.1.1_15_06_05.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=484"
-esp_iot_sdk_v1.1.0_15_05_26.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=425"
-esp_iot_sdk_v1.1.0_15_05_22.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=423"
-esp_iot_sdk_v1.0.1_15_04_24.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=325"
-esp_iot_sdk_v1.0.1_b2_15_04_10.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=293"
-esp_iot_sdk_v1.0.1_b1_15_04_02.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=276"
-esp_iot_sdk_v1.0.0_15_03_20.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=250"
-esp_iot_sdk_v0.9.6_b1_15_02_15.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=220"
-esp_iot_sdk_v0.9.5_15_01_23.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=189"
-esp_iot_sdk_v0.9.4_14_12_19.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=111"
-esp_iot_sdk_v0.9.3_14_11_21.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=72"
-esp_iot_sdk_v0.9.2_14_10_24.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
+$(DWNLOAD)/esp_iot_sdk_v1.5.0_15_11_27.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=989"
+$(DWNLOAD)/esp_iot_sdk_v1.4.0_15_09_18.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=838"
+$(DWNLOAD)/esp_iot_sdk_v1.3.0_15_08_08.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=664"
+$(DWNLOAD)/esp_iot_sdk_v1.2.0_15_07_03.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=564"
+$(DWNLOAD)/esp_iot_sdk_v1.1.2_15_06_12.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=521"
+$(DWNLOAD)/esp_iot_sdk_v1.1.1_15_06_05.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=484"
+$(DWNLOAD)/esp_iot_sdk_v1.1.0_15_05_26.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=425"
+$(DWNLOAD)/esp_iot_sdk_v1.1.0_15_05_22.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=423"
+$(DWNLOAD)/esp_iot_sdk_v1.0.1_15_04_24.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=325"
+$(DWNLOAD)/esp_iot_sdk_v1.0.1_b2_15_04_10.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=293"
+$(DWNLOAD)/esp_iot_sdk_v1.0.1_b1_15_04_02.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=276"
+$(DWNLOAD)/esp_iot_sdk_v1.0.0_15_03_20.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=250"
+$(DWNLOAD)/esp_iot_sdk_v0.9.6_b1_15_02_15.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=220"
+$(DWNLOAD)/esp_iot_sdk_v0.9.5_15_01_23.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=189"
+$(DWNLOAD)/esp_iot_sdk_v0.9.4_14_12_19.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=111"
+$(DWNLOAD)/esp_iot_sdk_v0.9.3_14_11_21.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=72"
+$(DWNLOAD)/esp_iot_sdk_v0.9.2_14_10_24.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=9"
 
 # Download the patches
-FRM_ERR_PATCH.rar:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=10"
-esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=73"
-sdk095_patch1.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=190"
-libssl.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=316"
-libnet80211.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=361"
-lib_patch_on_sdk_v1.1.0.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=432"
-scan_issue_test.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=525"
-1.1.2_patch_02.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=546"
-libssl_patch_1.2.0-1.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=583" -O $@
-libssl_patch_1.2.0-2.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=586" -O $@
-libsmartconfig_2.4.2.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=585"
-lib_mem_optimize_150714.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
+$(DWNLOAD)/FRM_ERR_PATCH.rar: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=10"
+$(DWNLOAD)/esp_iot_sdk_v0.9.3_14_11_21_patch1.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=73"
+$(DWNLOAD)/sdk095_patch1.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=190"
+$(DWNLOAD)/libssl.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=316"
+$(DWNLOAD)/libnet80211.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=361"
+$(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=432"
+$(DWNLOAD)/scan_issue_test.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=525"
+$(DWNLOAD)/1.1.2_patch_02.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=546"
+$(DWNLOAD)/libssl_patch_1.2.0-1.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=583"
+$(DWNLOAD)/libssl_patch_1.2.0-2.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=586"
+$(DWNLOAD)/libsmartconfig_2.4.2.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=585"
+$(DWNLOAD)/lib_mem_optimize_150714.zip: $(DWNLOAD)/.dir
+	wget -O $@ "http://bbs.espressif.com/download/file.php?id=594"
 
 clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
