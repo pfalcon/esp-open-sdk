@@ -1,14 +1,24 @@
-TOP = $(PWD)
-# Directory to install toolchain to, by default inside current dir.
-TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-# Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
-# for supported versions.
-VENDOR_SDK = 1.4.0
+
 # Whether to merge SDK into Xtensa toolchain, producing standalone
 # ESP8266 toolchain. Use 'n' if you want generic Xtensa toolchain
 # which can be used with multiple SDK versions.
 STANDALONE = y
 
+# Directory to install toolchain to, by default inside current dir.
+TOOLCHAIN = $(TOP)/xtensa-lx106-elf
+
+
+# Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
+# for supported versions.
+VENDOR_SDK = 1.4.0
+
+.PHONY: crosstool-NG toolchain libhal libcirom sdk
+
+
+
+TOP = $(PWD)
+PATCH = patch -b -N
+UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
@@ -48,10 +58,7 @@ VENDOR_SDK_DIR_0.9.3 = esp_iot_sdk_v0.9.3
 VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
-UNZIP = unzip -q -o
-PATCH = patch -b -N
 
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
 
 all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
@@ -70,15 +77,85 @@ else
 	@echo
 endif
 
+standalone: sdk sdk_patch toolchain
+ifeq ($(STANDALONE),y)
+	@echo "Installing vendor SDK headers into toolchain sysroot"
+	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
+	@echo "Installing vendor SDK libs into toolchain sysroot"
+	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
+	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
+	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
+	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
+endif
+
+clean: clean-sdk
+	make -C crosstool-NG clean MAKELEVEL=0
+	-rm -rf crosstool-NG/.build/src
+	-rm -rf $(TOOLCHAIN)
+
+
+
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
+
+toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+
+$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
+	make -C crosstool-NG -f ../Makefile _toolchain
+
+_toolchain:
+	./ct-ng xtensa-lx106-elf
+	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
+	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	cat ../crosstool-config-overrides >> .config
+	./ct-ng build
+
+clean-sysroot:
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
+
+crosstool-NG: crosstool-NG/ct-ng
+
+crosstool-NG/ct-ng: crosstool-NG/bootstrap
+	make -C crosstool-NG -f ../Makefile _ct-ng
+
+_ct-ng:
+	./bootstrap
+	./configure --prefix=`pwd`
+	make MAKELEVEL=0
+	make install MAKELEVEL=0
+
+crosstool-NG/bootstrap:
+	@echo "You cloned without --recursive, fetching submodules for you."
+	git submodule update --init --recursive
+
+libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo "Creating irom version of libc..."
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
 
-libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
+libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	make -C lx106-hal -f ../Makefile _libhal
+
+_libhal:
+	autoreconf -i
+	PATH=$(TOOLCHAIN)/bin:$(PATH) ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
+
+
+
+sdk: $(VENDOR_SDK_DIR)/.dir
+	ln -snf $(VENDOR_SDK_DIR) sdk
+
+$(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
+	$(UNZIP) $^
+	-mv License $(VENDOR_SDK_DIR)
+	touch $@
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
@@ -174,16 +251,40 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
-standalone: sdk sdk_patch toolchain
-ifeq ($(STANDALONE),y)
-	@echo "Installing vendor SDK headers into toolchain sysroot"
-	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
-	@echo "Installing vendor SDK libs into toolchain sysroot"
-	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
-	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
-	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
-	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
-endif
+esp_iot_sdk_v1.5.0_15_11_27.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
+esp_iot_sdk_v1.4.0_15_09_18.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=838"
+esp_iot_sdk_v1.3.0_15_08_08.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=664"
+esp_iot_sdk_v1.2.0_15_07_03.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=564"
+esp_iot_sdk_v1.1.2_15_06_12.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=521"
+esp_iot_sdk_v1.1.1_15_06_05.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=484"
+esp_iot_sdk_v1.1.0_15_05_26.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=425"
+esp_iot_sdk_v1.1.0_15_05_22.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=423"
+esp_iot_sdk_v1.0.1_15_04_24.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=325"
+esp_iot_sdk_v1.0.1_b2_15_04_10.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=293"
+esp_iot_sdk_v1.0.1_b1_15_04_02.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=276"
+esp_iot_sdk_v1.0.0_15_03_20.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=250"
+esp_iot_sdk_v0.9.6_b1_15_02_15.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=220"
+esp_iot_sdk_v0.9.5_15_01_23.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=189"
+esp_iot_sdk_v0.9.4_14_12_19.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=111"
+esp_iot_sdk_v0.9.3_14_11_21.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=72"
+esp_iot_sdk_v0.9.2_14_10_24.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
 
 FRM_ERR_PATCH.rar:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=10"
@@ -210,116 +311,15 @@ libsmartconfig_2.4.2.zip:
 lib_mem_optimize_150714.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
 
-sdk: $(VENDOR_SDK_DIR)/.dir
-	ln -snf $(VENDOR_SDK_DIR) sdk
-
-$(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
-	$(UNZIP) $^
-	-mv License $(VENDOR_SDK_DIR)
-	touch $@
-
-esp_iot_sdk_v1.5.0_15_11_27.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
-
-esp_iot_sdk_v1.4.0_15_09_18.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=838"
-
-esp_iot_sdk_v1.3.0_15_08_08.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=664"
-
-esp_iot_sdk_v1.2.0_15_07_03.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=564"
-
-esp_iot_sdk_v1.1.2_15_06_12.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=521"
-
-esp_iot_sdk_v1.1.1_15_06_05.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=484"
-
-esp_iot_sdk_v1.1.0_15_05_26.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=425"
-
-esp_iot_sdk_v1.1.0_15_05_22.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=423"
-
-esp_iot_sdk_v1.0.1_15_04_24.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=325"
-
-esp_iot_sdk_v1.0.1_b2_15_04_10.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=293"
-
-esp_iot_sdk_v1.0.1_b1_15_04_02.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=276"
-
-esp_iot_sdk_v1.0.0_15_03_20.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=250"
-
-esp_iot_sdk_v0.9.6_b1_15_02_15.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=220"
-
-esp_iot_sdk_v0.9.5_15_01_23.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=189"
-
-esp_iot_sdk_v0.9.4_14_12_19.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=111"
-
-esp_iot_sdk_v0.9.3_14_11_21.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=72"
-
-esp_iot_sdk_v0.9.2_14_10_24.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
-
-libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
-
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	make -C lx106-hal -f ../Makefile _libhal
-
-_libhal:
-	autoreconf -i
-	PATH=$(TOOLCHAIN)/bin:$(PATH) ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
-
-
-toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-
-$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	make -C crosstool-NG -f ../Makefile _toolchain
-
-_toolchain:
-	./ct-ng xtensa-lx106-elf
-	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
-	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
-	cat ../crosstool-config-overrides >> .config
-	./ct-ng build
-
-
-crosstool-NG: crosstool-NG/ct-ng
-
-crosstool-NG/ct-ng: crosstool-NG/bootstrap
-	make -C crosstool-NG -f ../Makefile _ct-ng
-
-_ct-ng:
-	./bootstrap
-	./configure --prefix=`pwd`
-	make MAKELEVEL=0
-	make install MAKELEVEL=0
-
-crosstool-NG/bootstrap:
-	@echo "You cloned without --recursive, fetching submodules for you."
-	git submodule update --init --recursive
-
-
-clean: clean-sdk
-	make -C crosstool-NG clean MAKELEVEL=0
-	-rm -rf crosstool-NG/.build/src
-	-rm -rf $(TOOLCHAIN)
-
 clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
 	rm -f sdk
 	rm -f .sdk_patch_$(VENDOR_SDK)
 
-clean-sysroot:
-	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
-	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
+
+
+
+
+
+
+
