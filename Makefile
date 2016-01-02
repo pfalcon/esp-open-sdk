@@ -75,7 +75,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 # Global rules
 #
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+all: esptool libcirom libhal standalone
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
