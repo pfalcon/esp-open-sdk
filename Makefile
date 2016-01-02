@@ -81,6 +81,7 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_1.4.0:
 	patch -N -d $(VENDOR_SDK_DIR_1.4.0) -p1 < c_types-c99.patch
+	patch -N -d $(VENDOR_SDK_DIR_1.4.0) -p1 < dhcps_lease.patch
 	@touch $@
 
 .sdk_patch_1.3.0:
