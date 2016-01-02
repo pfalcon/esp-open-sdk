@@ -15,7 +15,8 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # 1.1.0 1.1.1 1.1.2 1.2.0 1.3.0 1.4.0 1.5.0
 VENDOR_SDK = 1.4.0
 
-# Makefile setup: phony targets
+# Makefile setup: first target and phony targets
+first: all
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
 
