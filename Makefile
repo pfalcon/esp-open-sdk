@@ -10,6 +10,8 @@ STANDALONE = y
 # Directory to install the toolchain to, by default inside current dir
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
+# Directory to install the vendor SDK to, by default inside current dir
+SDKDIR = $(TOP)/sdk
 
 # Vendor SDK version to install. Supported are:
 # 0.9.2 0.9.3 0.9.4 0.9.5 0.9.6b1 1.0.0 1.0.1b1 1.0.1b2 1.0.1
@@ -82,7 +84,7 @@ ifneq ($(STANDALONE),y)
 	@echo "Espressif ESP8266 SDK is installed. Toolchain contains only Open Source components"
 	@echo "To link external proprietary libraries add:"
 	@echo
-	@echo "xtensa-lx106-elf-gcc -I$(TOP)/sdk/include -L$(TOP)/sdk/lib"
+	@echo "xtensa-lx106-elf-gcc -I$(SDKDIR)/include -L$(SDKDIR)/lib"
 	@echo
 else
 	@echo "Espressif ESP8266 SDK is installed, its libraries and headers are merged with the toolchain"
@@ -92,12 +94,12 @@ endif
 standalone: sdk sdk_patch toolchain
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers into toolchain sysroot"
-	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
+	@cp -Rf $(SDKDIR)/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 	@echo "Installing vendor SDK libs into toolchain sysroot"
-	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
+	@cp -Rf $(SDKDIR)/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
 	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
-	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
-	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
+	@sed -e 's/\r//' $(SDKDIR)/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
+	@sed -e 's/\r//' $(SDKDIR)/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
 endif
 
 clean: clean-sdk
@@ -174,7 +176,7 @@ _libhal:
 
 # Unpack the (unpatched) SDK
 sdk: $(VENDOR_SDK_DIR)/.dir
-	ln -snf $(VENDOR_SDK_DIR) sdk
+	ln -srnf $(VENDOR_SDK_DIR) $(SDKDIR)
 
 $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
@@ -341,5 +343,5 @@ lib_mem_optimize_150714.zip:
 
 clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
-	rm -f sdk
+	rm -f $(SDKDIR)
 	rm -f .sdk_patch_$(VENDOR_SDK)
