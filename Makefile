@@ -1,20 +1,28 @@
+#
+# General configuration
+#
 
-# Whether to merge SDK into Xtensa toolchain, producing standalone
-# ESP8266 toolchain. Use 'n' if you want generic Xtensa toolchain
+# Whether to merge the SDK into the Xtensa toolchain, producing a standalone
+# ESP8266 toolchain. Use 'n' if you want a generic Xtensa toolchain
 # which can be used with multiple SDK versions.
 STANDALONE = y
 
-# Directory to install toolchain to, by default inside current dir.
+# Directory to install the toolchain to, by default inside current dir
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
 
-# Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
-# for supported versions.
+# Vendor SDK version to install. Supported are:
+# 0.9.2 0.9.3 0.9.4 0.9.5 0.9.6b1 1.0.0 1.0.1b1 1.0.1b2 1.0.1
+# 1.1.0 1.1.1 1.1.2 1.2.0 1.3.0 1.4.0 1.5.0
 VENDOR_SDK = 1.4.0
 
+# Makefile setup: phony targets
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
 
+#
+# Internal variables
+#
 
 TOP = $(PWD)
 PATCH = patch -b -N
@@ -59,6 +67,9 @@ VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
+#
+# Global rules
+#
 
 all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
@@ -94,10 +105,15 @@ clean: clean-sdk
 	-rm -rf $(TOOLCHAIN)
 
 
+#
+# Free/Libre Tools
+#
 
+# esptool
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
+# toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
@@ -114,6 +130,7 @@ clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
 
+# crosstools
 crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
@@ -129,6 +146,7 @@ crosstool-NG/bootstrap:
 	@echo "You cloned without --recursive, fetching submodules for you."
 	git submodule update --init --recursive
 
+# irom version of libc
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
@@ -136,6 +154,7 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
 
+# libhal
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
@@ -148,7 +167,11 @@ _libhal:
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
 
 
+#
+# Non-free SDK
+#
 
+# Unpack the (unpatched) SDK
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
 
@@ -157,6 +180,7 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
+# Patch the SDK
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_1.5.0:
@@ -248,9 +272,11 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
+# Compile object file required by some patches
 empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
+# Download the SDK bundles
 esp_iot_sdk_v1.5.0_15_11_27.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
 esp_iot_sdk_v1.4.0_15_09_18.zip:
@@ -286,6 +312,7 @@ esp_iot_sdk_v0.9.3_14_11_21.zip:
 esp_iot_sdk_v0.9.2_14_10_24.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=9"
 
+# Download the patches
 FRM_ERR_PATCH.rar:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=10"
 esp_iot_sdk_v0.9.3_14_11_21_patch1.zip:
@@ -315,11 +342,3 @@ clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
 	rm -f sdk
 	rm -f .sdk_patch_$(VENDOR_SDK)
-
-
-
-
-
-
-
-
