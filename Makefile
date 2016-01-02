@@ -17,7 +17,7 @@ VENDOR_SDK = 1.4.0
 
 # Makefile setup: first target and phony targets
 first: all
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
+.PHONY: first all standalone clean esptool toolchain _toolchain clean-sysroot crosstool-NG _ct-ng libcirom libhal _libhal sdk sdk_patch clean-sdk
 
 
 #
