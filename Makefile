@@ -114,7 +114,7 @@ clean: clean-sdk
 # esptool
 esptool: $(TOOLCHAIN)/bin/esptool.py
 
-$(TOOLCHAIN)/bin/esptool.py: esptool/esptool.py toolchain
+$(TOOLCHAIN)/bin/esptool.py: esptool/esptool.py $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
 # toolchain
