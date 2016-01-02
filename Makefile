@@ -27,6 +27,7 @@ first: all
 #
 
 TOP = $(PWD)
+UNRAR = unrar x -o+
 UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
@@ -268,7 +269,7 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir 
-	unrar x -o+ $<
+	$(UNRAR) $<
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
