@@ -151,8 +151,7 @@ crosstool-NG/ct-ng: crosstool-NG/bootstrap
 
 _ct-ng:
 	./bootstrap
-	./configure --prefix=`pwd`
-	make MAKELEVEL=0
+	./configure --enable-local
 	make install MAKELEVEL=0
 
 crosstool-NG/bootstrap:
