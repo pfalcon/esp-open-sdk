@@ -2,8 +2,6 @@ TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 VENDOR_SDK = 1.4.0
 
-UNZIP = unzip -q -o
-
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
@@ -43,6 +41,8 @@ VENDOR_SDK_DIR_0.9.3 = esp_iot_sdk_v0.9.3
 VENDOR_SDK_ZIP_0.9.2 = esp_iot_sdk_v0.9.2_14_10_24.zip
 VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 STANDALONE = y
+
+UNZIP = unzip -q -o
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
