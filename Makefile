@@ -112,7 +112,9 @@ clean: clean-sdk
 #
 
 # esptool
-esptool: toolchain
+esptool: $(TOOLCHAIN)/bin/esptool.py
+
+$(TOOLCHAIN)/bin/esptool.py: esptool/esptool.py toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
 # toolchain
