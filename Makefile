@@ -127,9 +127,6 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
-empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
-
 .sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
 	$(UNZIP) $<
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
@@ -173,6 +170,9 @@ empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106
 	unrar x -o+ $<
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
+
+empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
 standalone: sdk sdk_patch toolchain
 ifeq ($(STANDALONE),y)
