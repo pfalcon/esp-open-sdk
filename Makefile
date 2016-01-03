@@ -103,8 +103,8 @@ ifeq ($(STANDALONE),y)
 endif
 
 clean: clean-sdk
-	make -C crosstool-NG clean MAKELEVEL=0
-	-rm -rf crosstool-NG/.build/src
+	make -C modules/crosstool-NG clean MAKELEVEL=0
+	-rm -rf modules/crosstool-NG/.build/src
 	-rm -rf $(TOOLCHAIN)
 
 
@@ -115,22 +115,22 @@ clean: clean-sdk
 # esptool
 esptool: $(TOOLCHAIN)/bin/esptool.py
 
-$(TOOLCHAIN)/bin/esptool.py: esptool/esptool.py $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	cp esptool/esptool.py $(TOOLCHAIN)/bin/
+$(TOOLCHAIN)/bin/esptool.py: modules/esptool/esptool.py $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	cp modules/esptool/esptool.py $(TOOLCHAIN)/bin/
 
 # toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
-$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng $(DWNLOAD)/.dir
-	mkdir -p crosstool-NG/.build
-	ln -srnf $(DWNLOAD) crosstool-NG/.build/tarballs
-	make -C crosstool-NG -f ../Makefile _toolchain
+$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: modules/crosstool-NG/ct-ng $(DWNLOAD)/.dir
+	mkdir -p modules/crosstool-NG/.build
+	ln -srnf $(DWNLOAD) modules/crosstool-NG/.build/tarballs
+	make -C modules/crosstool-NG -f ../../Makefile _toolchain
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i -e "s%^(CT_PREFIX_DIR=).*%\1\"$(TOOLCHAIN)\"%" \
 	    -e "s%^CT_INSTALL_DIR_RO=y%#&%" .config
-	cat ../patches/crosstool-config-overrides >> .config
+	cat ../../patches/crosstool-config-overrides >> .config
 	./ct-ng build
 
 $(DWNLOAD)/.dir:
@@ -142,17 +142,17 @@ clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
 
 # crosstools
-crosstool-NG: crosstool-NG/ct-ng
+crosstool-NG: modules/crosstool-NG/ct-ng
 
-crosstool-NG/ct-ng: crosstool-NG/bootstrap
-	make -C crosstool-NG -f ../Makefile _ct-ng
+modules/crosstool-NG/ct-ng: modules/crosstool-NG/bootstrap
+	make -C modules/crosstool-NG -f ../../Makefile _ct-ng
 
 _ct-ng:
 	./bootstrap
 	./configure --enable-local
 	make install MAKELEVEL=0
 
-crosstool-NG/bootstrap:
+modules/crosstool-NG/bootstrap:
 	@echo "You cloned without --recursive, fetching submodules for you."
 	git submodule update --init --recursive
 
@@ -168,7 +168,7 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	make -C lx106-hal -f ../Makefile _libhal
+	make -C modules/lx106-hal -f ../../Makefile _libhal
 
 _libhal:
 	autoreconf -i
