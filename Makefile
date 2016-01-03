@@ -208,36 +208,36 @@ $(VENDOR_SDK_DIR_1.3.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.3.0)/.sdk_unzip
 	$(PATCH) -d $(VENDOR_SDK_DIR_1.3.0) -p1 < patches/c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip empty_user_rf_pre_init.o #$(DWNLOAD)/libsmartconfig_2.4.2.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip
+$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o #$(DWNLOAD)/libsmartconfig_2.4.2.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip
 	$(UNZIP) $(DWNLOAD)/lib_mem_optimize_150714.zip
 	mv libssl.a libnet80211.a libpp.a libsmartconfig.a $(VENDOR_SDK_DIR_1.2.0)/lib/
 	#$(UNZIP) $(DWNLOAD)/libssl_patch_1.2.0-2.zip
 	#$(UNZIP) $(DWNLOAD)/libsmartconfig_2.4.2.zip
 	#mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < patches/c_types-c99.patch
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.1.2)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.2)/.sdk_unzip $(DWNLOAD)/scan_issue_test.zip $(DWNLOAD)/1.1.2_patch_02.zip empty_user_rf_pre_init.o
+$(VENDOR_SDK_DIR_1.1.2)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.2)/.sdk_unzip $(DWNLOAD)/scan_issue_test.zip $(DWNLOAD)/1.1.2_patch_02.zip $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	$(UNZIP) scan_issue_test.zip
 	$(UNZIP) 1.1.2_patch_02.zip
 	mv libmain.a libnet80211.a libpp.a $(VENDOR_SDK_DIR_1.1.2)/lib/
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.2) -p1 < patches/c_types-c99.patch
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.2)/lib/libmain.a empty_user_rf_pre_init.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.2)/lib/libmain.a $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.1.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.1)/.sdk_unzip empty_user_rf_pre_init.o
+$(VENDOR_SDK_DIR_1.1.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.1)/.sdk_unzip $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.1) -p1 < patches/c_types-c99.patch
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a empty_user_rf_pre_init.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip $(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip empty_user_rf_pre_init.o
+$(VENDOR_SDK_DIR_1.1.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.1.0)/.sdk_unzip $(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	$(UNZIP) $(DWNLOAD)/lib_patch_on_sdk_v1.1.0.zip
 	mv libsmartconfig_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libsmartconfig.a
 	mv libmain_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a
 	mv libssl_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libssl.a
 	$(PATCH) -f -d $(VENDOR_SDK_DIR_1.1.0) -p1 < patches/c_types-c99.patch
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a empty_user_rf_pre_init.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a $(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o
 	@touch $@
 
 $(VENDOR_SDK_DIR_1.0.1)/.sdk_patch: $(VENDOR_SDK_DIR_1.0.1)/.sdk_unzip $(DWNLOAD)/libnet80211.zip
@@ -285,8 +285,9 @@ $(VENDOR_SDK_DIR_0.9.2)/.sdk_patch: $(VENDOR_SDK_DIR_0.9.2)/.sdk_unzip $(DWNLOAD
 	@touch $@
 
 # Compile object file required by some patches
-empty_user_rf_pre_init.o: patches/empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
+$(VENDOR_SDK_DIR)/.build/empty_user_rf_pre_init.o: patches/empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	mkdir -p $(VENDOR_SDK_DIR)/.build
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $< -o $@
 
 # Download the SDK bundles
 $(DWNLOAD)/esp_iot_sdk_v1.5.0_15_11_27.zip: $(DWNLOAD)/.dir
