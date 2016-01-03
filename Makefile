@@ -300,8 +300,9 @@ $(DWNLOAD)/esp_iot_sdk_v1.1.1_15_06_05.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=484"
 $(DWNLOAD)/esp_iot_sdk_v1.1.0_15_05_26.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=425"
-$(DWNLOAD)/esp_iot_sdk_v1.1.0_15_05_22.zip: $(DWNLOAD)/.dir
-	wget -O $@ "http://bbs.espressif.com/download/file.php?id=423"
+# URL errors out w/ 404
+#$(DWNLOAD)/esp_iot_sdk_v1.1.0_15_05_22.zip: $(DWNLOAD)/.dir
+#	wget -O $@ "http://bbs.espressif.com/download/file.php?id=423"
 $(DWNLOAD)/esp_iot_sdk_v1.0.1_15_04_24.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=325"
 $(DWNLOAD)/esp_iot_sdk_v1.0.1_b2_15_04_10.zip: $(DWNLOAD)/.dir
@@ -342,8 +343,9 @@ $(DWNLOAD)/libssl_patch_1.2.0-1.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=583"
 $(DWNLOAD)/libssl_patch_1.2.0-2.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=586"
-$(DWNLOAD)/libsmartconfig_2.4.2.zip: $(DWNLOAD)/.dir
-	wget -O $@ "http://bbs.espressif.com/download/file.php?id=585"
+# URL errors out w/ 404
+#$(DWNLOAD)/libsmartconfig_2.4.2.zip: $(DWNLOAD)/.dir
+#	wget -O $@ "http://bbs.espressif.com/download/file.php?id=585"
 $(DWNLOAD)/lib_mem_optimize_150714.zip: $(DWNLOAD)/.dir
 	wget -O $@ "http://bbs.espressif.com/download/file.php?id=594"
 
