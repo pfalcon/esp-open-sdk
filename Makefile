@@ -205,12 +205,12 @@ $(VENDOR_SDK_DIR_1.3.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.3.0)/.sdk_unzip
 	patch -N -d $(VENDOR_SDK_DIR_1.3.0) -p1 < patches/c_types-c99.patch
 	@touch $@
 
-$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
+$(VENDOR_SDK_DIR_1.2.0)/.sdk_patch: $(VENDOR_SDK_DIR_1.2.0)/.sdk_unzip $(DWNLOAD)/lib_mem_optimize_150714.zip empty_user_rf_pre_init.o #$(DWNLOAD)/libsmartconfig_2.4.2.zip $(DWNLOAD)/libssl_patch_1.2.0-2.zip
+	$(UNZIP) $(DWNLOAD)/lib_mem_optimize_150714.zip
+	mv libssl.a libnet80211.a libpp.a libsmartconfig.a $(VENDOR_SDK_DIR_1.2.0)/lib/
 	#$(UNZIP) $(DWNLOAD)/libssl_patch_1.2.0-2.zip
 	#$(UNZIP) $(DWNLOAD)/libsmartconfig_2.4.2.zip
-	$(UNZIP) $(DWNLOAD)/lib_mem_optimize_150714.zip
 	#mv libsmartconfig_2.4.2.a $(VENDOR_SDK_DIR_1.2.0)/lib/libsmartconfig.a
-	mv libssl.a libnet80211.a libpp.a libsmartconfig.a $(VENDOR_SDK_DIR_1.2.0)/lib/
 	patch -N -f -d $(VENDOR_SDK_DIR_1.2.0) -p1 < patches/c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.2.0)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
