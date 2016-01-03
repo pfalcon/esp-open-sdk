@@ -128,8 +128,8 @@ $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng $(DWNLOAD)/.dir
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
-	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
-	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	sed -r -i -e "s%^(CT_PREFIX_DIR=).*%\1\"$(TOOLCHAIN)\"%" \
+	    -e "s%^CT_INSTALL_DIR_RO=y%#&%" .config
 	cat ../patches/crosstool-config-overrides >> .config
 	./ct-ng build
 
