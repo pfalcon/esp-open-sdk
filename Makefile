@@ -114,6 +114,11 @@ clean: clean-sdk
 # Free/Libre Tools
 #
 
+# get missing submodules
+modules/crosstool-NG/bootstrap modules/esptool/esptool.py modules/lx106-hal/configure.ac:
+	@echo "You cloned without --recursive, fetching submodules for you."
+	git submodule update --init --recursive
+
 # esptool
 esptool: $(TOOLCHAIN)/bin/esptool.py
 
@@ -154,10 +159,6 @@ _ct-ng:
 	./configure --enable-local
 	make install MAKELEVEL=0
 
-modules/crosstool-NG/bootstrap:
-	@echo "You cloned without --recursive, fetching submodules for you."
-	git submodule update --init --recursive
-
 # irom version of libc
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
@@ -169,7 +170,7 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 # libhal
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: modules/lx106-hal/configure.ac $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	make -C modules/lx106-hal -f ../../Makefile _libhal
 
 _libhal:
