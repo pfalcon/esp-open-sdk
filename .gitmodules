@@ -1,7 +1,7 @@
 [submodule "crosstool-NG"]
 	path = crosstool-NG
 	url = https://github.com/jcmvbkbc/crosstool-NG
-	branch = lx106-g++
+	branch = xtensa-1.22.x
 [submodule "lx106-hal"]
 	path = lx106-hal
 	url = https://github.com/tommie/lx106-hal
