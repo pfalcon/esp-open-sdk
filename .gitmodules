@@ -8,3 +8,6 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/pfalcon/esptool
+[submodule "examples/esp-hello-world"]
+	path = examples/esp-hello-world
+	url = https://github.com/BroukPytlik/esp-hello-world.git
