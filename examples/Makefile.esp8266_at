@@ -5,7 +5,7 @@ LDLIBS = -nostdlib -Wl,--start-group -lmain -lupgrade -lnet80211 -lwpa -llwip -l
 LDFLAGS = -Teagle.app.v6.ld
 
 at-0x00000.bin: at
-    esptool.py elf2image $^
+	esptool.py elf2image $^
 
 at: driver/uart.o \
     user/at_baseCmd.o \
@@ -17,7 +17,7 @@ at: driver/uart.o \
     $(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 flash: at-0x00000.bin
-    esptool.py write_flash 0 at-0x00000.bin 0x40000 at-0x40000.bin
+	esptool.py write_flash 0 at-0x00000.bin 0x40000 at-0x40000.bin
 
 connect:
-    picocom -b 115200 --omap crcrlf /dev/ttyUSB0
+	picocom -b 115200 --omap crcrlf /dev/ttyUSB0
