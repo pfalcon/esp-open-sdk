@@ -162,6 +162,7 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_1.5.1:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010501" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
