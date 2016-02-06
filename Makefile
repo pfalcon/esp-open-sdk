@@ -22,6 +22,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
+VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.1 = ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip
 VENDOR_SDK_DIR_1.5.1 = esp_iot_sdk_v1.5.1
 VENDOR_SDK_ZIP_1.5.0 = esp_iot_sdk_v1.5.0_15_11_27.zip
@@ -161,6 +163,12 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 
 sdk_patch: .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_1.5.2:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; ar x ../libcrypto.a; cd ..; ar rs libwpa.a tmp/*.o
+	@touch $@
+
 .sdk_patch_1.5.1:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010501" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
@@ -271,6 +279,8 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
+ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
 ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1046"
 esp_iot_sdk_v1.5.0_15_11_27.zip:
