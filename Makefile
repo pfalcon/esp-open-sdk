@@ -164,12 +164,13 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 .sdk_patch_1.5.1:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010501" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; ar x ../libcrypto.a; cd ..; ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.5.0:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010500" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
-	cd $(VENDOR_SDK_DIR_1.5.0)/lib; mkdir -p tmp; cd tmp; ar x ../libcrypto.a; cd ..; ar rs libwpa.a tmp/*.o
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; ar x ../libcrypto.a; cd ..; ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.4.0:
