@@ -110,10 +110,18 @@ To build the standalone SDK:
 $ make STANDALONE=y
 ```
 
-This will download all necessary components and compile them. Once done,
-the toolchain (with the Xtensa HAL library) will be available in the
-`xtensa-lx106-elf/` directory. Add its `bin/` subdirectory to your
-`$PATH` to execute `xtensa-lx106-elf-gcc` and other tools.
+This will download all necessary components and compile them.
+
+Using the toolchain
+===================
+
+Once you complete build process as described above, the toolchain (with
+the Xtensa HAL library) will be available in the `xtensa-lx106-elf/`
+subdirectory. Add `xtensa-lx106-elf/bin/` subdirectory to your `PATH`
+environment variable to execute `xtensa-lx106-elf-gcc` and other tools.
+At the end of build process, the exact command to set PATH correctly
+for your case will be output. You may want to save it, as you'll need
+the PATH set correctly each time you compile for Xtensa/ESP.
 
 ESP8266 SDK will be installed in `sdk/`. If you chose the non-standalone
 SDK, run the compiler with the corresponding include and lib dir flags:
