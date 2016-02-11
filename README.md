@@ -98,16 +98,23 @@ The project can be built in two modes:
        to a newer vendor IoT SDK releases.
     2. Abide by licensing terms of the vendor IoT SDK.
 
-To build the separated SDK:
-
-```
-$ make STANDALONE=n
-```
-
-To build the standalone SDK:
+To build the self-contained, standalone toolchain+SDK:
 
 ```
 $ make STANDALONE=y
+```
+
+This is the default choice which most people are looking for, so just the
+following is enough:
+
+```
+$ make
+```
+
+To build the bare Xtensa toolchain and leave ESP8266 SDK separate:
+
+```
+$ make STANDALONE=n
 ```
 
 This will download all necessary components and compile them.
