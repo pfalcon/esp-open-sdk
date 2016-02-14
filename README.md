@@ -119,6 +119,8 @@ $ make STANDALONE=n
 
 This will download all necessary components and compile them.
 
+> If you are having trouble compiling on OS X, run this command after the first `make` failed: `sed -i '/__need_size_t/d' ./crosstool-NG/.build/src/gmp-5.1.3/gmp-h.in` and then run `make` or `make STANDALONE=n` again.
+
 Using the toolchain
 ===================
 
