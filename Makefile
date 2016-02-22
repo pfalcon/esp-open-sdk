@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.5.0
+VENDOR_SDK = 1.5.2
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
+VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.0 = esp_iot_sdk_v1.5.0_15_11_27.zip
 VENDOR_SDK_DIR_1.5.0 = esp_iot_sdk_v1.5.0
 VENDOR_SDK_ZIP_1.4.1 = esp_iot_sdk_v1.4.1_pre5_15_10_27.zip
@@ -78,6 +80,11 @@ esptool: toolchain
 			--rename-section .irom0.text=.text \
 			$$l; \
 	done
+	@touch $@
+
+.sdk_patch_1.5.2:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	patch -N -d $(VENDOR_SDK_DIR_1.5.2) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.5.0:
@@ -218,6 +225,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
+
+ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
 
 esp_iot_sdk_v1.5.0_15_11_27.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=989"
