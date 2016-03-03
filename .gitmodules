@@ -8,3 +8,7 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/pfalcon/esptool
+[submodule "esp-open-lwip"]
+	path = esp-open-lwip
+	url = https://github.com/pfalcon/esp-open-lwip
+	branch = sdk-1.5.0
