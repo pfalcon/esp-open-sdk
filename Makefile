@@ -161,7 +161,7 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
-sdk_patch: .sdk_patch_$(VENDOR_SDK)
+sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_1.5.2:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
@@ -279,7 +279,7 @@ sdk_patch: .sdk_patch_$(VENDOR_SDK)
 empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
 
-lwip:
+lwip: toolchain sdk_patch
 	make -C esp-open-lwip -f Makefile.open install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
 	    PREFIX=$(TOOLCHAIN)
