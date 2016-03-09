@@ -283,6 +283,9 @@ lwip: toolchain sdk_patch
 	make -C esp-open-lwip -f Makefile.open install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
 	    PREFIX=$(TOOLCHAIN)
+	cp -a esp-open-lwip/include/arch esp-open-lwip/include/lwip esp-open-lwip/include/netif \
+	    esp-open-lwip/include/lwipopts.h \
+	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 
 ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
