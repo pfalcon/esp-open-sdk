@@ -95,6 +95,7 @@ endif
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
+	-rm -f crosstool-NG/local-patches/gcc/4.8.2/1000-*
 	-rm -rf $(TOOLCHAIN)
 
 
@@ -105,6 +106,7 @@ esptool: toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
+	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.2/
 	make -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
