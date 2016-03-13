@@ -36,7 +36,7 @@ Requirements and Dependencies
 
 To build the standalone SDK and toolchain, you need a GNU/POSIX system
 (Linux, BSD, MacOSX, Windows with Cygwin) with the standard GNU development
-tools installed: gcc, binutils, flex, bison, etc.
+tools installed: bash, gcc, binutils, flex, bison, etc.
 
 Please make sure that the machine you use to build the toolchain has at least
 1G free RAM+swap (or more, which will speed up the build).
@@ -47,7 +47,7 @@ Ubuntu 14.04:
 ```
 $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python python-serial sed \
-    git unzip
+    git unzip bash
 ```
 
 Later Debian/Ubuntu versions may require:
