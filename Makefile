@@ -12,8 +12,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # for supported versions.
 VENDOR_SDK = 1.5.2
 
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
-
+.PHONY: crosstool-NG toolchain libhal libcirom libstdc++irom libnlport sdk
 
 
 TOP = $(PWD)
@@ -153,7 +152,7 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a: $(TOOLCHAIN)/xtensa-l
 
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc 
 	make -C lx106-hal -f ../Makefile _libhal
 
 _libhal:
@@ -164,7 +163,7 @@ _libhal:
 
 libnlport: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc sdk sdk_patch toolchain standalone
 	make -C esp_newlib_port -f ../Makefile _libnlport
 	cp -f esp_newlib_port/libnlport.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a
 
