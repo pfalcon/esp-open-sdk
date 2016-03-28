@@ -65,7 +65,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool libcirom libstdc++irom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -96,7 +96,7 @@ endif
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
-	-rm -f crosstool-NG/local-patches/gcc/4.8.2/1000-*
+	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
 
 
@@ -107,7 +107,7 @@ esptool: toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.2/
+	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
 	make -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
@@ -140,6 +140,13 @@ libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo "Creating irom version of libc..."
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
+		--rename-section .literal=.irom0.literal $(<) $(@);
+
+libstdc++irom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	@echo "Creating irom version of libstdc++..."
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
 
