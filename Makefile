@@ -12,7 +12,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # for supported versions.
 VENDOR_SDK = 1.5.2
 
-.PHONY: crosstool-NG toolchain libhal libcirom libstdc++irom libnlport sdk
+.PHONY: crosstool-NG toolchain libhal libcirom libstdc++irom libnlport libstdc++port sdk
 
 
 TOP = $(PWD)
@@ -64,7 +64,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom libstdc++irom libnlport standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool libcirom libstdc++irom libnlport libstdc++port standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -93,6 +93,8 @@ ifeq ($(STANDALONE),y)
 	@sed -e 's/\r//' sdk/ld/eagle.app.v6.new.2048.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.new.2048.ld
 	@sed -e 's/\r//' sdk/ld/eagle.app.v6.new.2048.irom.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.new.2048.irom.ld
 	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
+	@echo "Installing port lib headers into toolchain sysroot"
+	@cp -Rf esp_stdcpp_port/cpp_routines.h $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/cpp_routines.h
 endif
 
 clean: clean-sdk
@@ -171,6 +173,15 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a: $(TOOLCHAIN)/bin/xten
 	cp -f esp_newlib_port/libnlport.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a
 
 _libnlport:
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make
+
+libstdc++port: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc sdk sdk_patch toolchain standalone
+	make -C esp_stdcpp_port -f ../Makefile _libstdc++port
+	cp -f esp_stdcpp_port/libstdc++port.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a
+
+_libstdc++port:
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make
 
 sdk: $(VENDOR_SDK_DIR)/.dir
