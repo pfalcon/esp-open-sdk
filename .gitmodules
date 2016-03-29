@@ -22,3 +22,4 @@
 [submodule "esp_stdcpp_port"]
 	path = esp_stdcpp_port
 	url = https://github.com/Sermus/esp_stdcpp_port.git
+	branch = lx106
