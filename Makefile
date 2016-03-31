@@ -12,7 +12,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # for supported versions.
 VENDOR_SDK = 1.5.2
 
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
+.PHONY: crosstool-NG toolchain libhal libcirom libnewlibport sdk
 
 
 
@@ -65,7 +65,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool libcirom libnewlibport standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -95,6 +95,7 @@ endif
 
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
+	make -C esp_newlib_port clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
 	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
@@ -154,7 +155,14 @@ _libhal:
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
 
+libnewlibport: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnewlibport.a
 
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnewlibport.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc sdk sdk_patch toolchain standalone
+	make -C esp_newlib_port -f ../Makefile _libnewlibport
+	cp -f esp_newlib_port/libnewlibport.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnewlibport.a
+
+_libnewlibport:
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk

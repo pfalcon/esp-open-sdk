@@ -12,3 +12,7 @@
 	path = esp-open-lwip
 	url = https://github.com/pfalcon/esp-open-lwip
 	branch = sdk-1.5.0
+[submodule "esp_newlib_port"]
+	path = esp_newlib_port
+	url = https://github.com/Sermus/esp_newlib_port.git
+	branch = lx106
