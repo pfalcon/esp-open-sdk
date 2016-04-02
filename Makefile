@@ -274,7 +274,7 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	$(UNZIP) $<
 	@touch $@
 
-.sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir 
+.sdk_patch_0.9.2: FRM_ERR_PATCH.rar esp_iot_sdk_v0.9.2/.dir
 	unrar x -o+ $<
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
@@ -285,6 +285,7 @@ empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106
 lwip: toolchain sdk_patch
 	make -C esp-open-lwip -f Makefile.open install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
+	    COPT=-I../$(VENDOR_SDK_DIR)/include \
 	    PREFIX=$(TOOLCHAIN)
 	cp -a esp-open-lwip/include/arch esp-open-lwip/include/lwip esp-open-lwip/include/netif \
 	    esp-open-lwip/include/lwipopts.h \
