@@ -12,8 +12,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # for supported versions.
 VENDOR_SDK = 1.5.2
 
-.PHONY: crosstool-NG toolchain libhal libcirom sdk
-
+.PHONY: crosstool-NG toolchain libhal libcirom libstdc++irom libnlport libstdc++port sdk
 
 
 TOP = $(PWD)
@@ -65,7 +64,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool libcirom libstdc++irom libnlport libstdc++port standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -90,13 +89,19 @@ ifeq ($(STANDALONE),y)
 	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
 	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
 	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
+	@sed -e 's/\r//' sdk/ld/eagle.app.v6.irom.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.irom.ld
+	@sed -e 's/\r//' sdk/ld/eagle.app.v6.new.2048.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.new.2048.ld
+	@sed -e 's/\r//' sdk/ld/eagle.app.v6.new.2048.irom.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.new.2048.irom.ld
 	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
+	@echo "Installing port lib headers into toolchain sysroot"
+	@cp -Rf esp_stdcpp_port/cpp_routines.h $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/cpp_routines.h
 endif
 
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
+	make -C esp_newlib_port clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
-	-rm -f crosstool-NG/local-patches/gcc/4.8.2/1000-*
+	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
 
 
@@ -107,7 +112,7 @@ esptool: toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.2/
+	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
 	make -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
@@ -143,9 +148,16 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
 
+libstdc++irom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	@echo "Creating irom version of libstdc++..."
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
+		--rename-section .literal=.irom0.literal $(<) $(@);
+
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
-$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc 
 	make -C lx106-hal -f ../Makefile _libhal
 
 _libhal:
@@ -154,7 +166,23 @@ _libhal:
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make
 	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
 
+libnlport: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a
 
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc sdk sdk_patch toolchain standalone
+	make -C esp_newlib_port -f ../Makefile _libnlport
+	cp -f esp_newlib_port/libnlport.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libnlport.a
+
+_libnlport:
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make
+
+libstdc++port: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc sdk sdk_patch toolchain standalone
+	make -C esp_stdcpp_port -f ../Makefile _libstdc++port
+	cp -f esp_stdcpp_port/libstdc++port.a $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libstdc++port.a
+
+_libstdc++port:
+	PATH=$(TOOLCHAIN)/bin:$(PATH) make
 
 sdk: $(VENDOR_SDK_DIR)/.dir
 	ln -snf $(VENDOR_SDK_DIR) sdk
@@ -169,6 +197,9 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 .sdk_patch_1.5.2:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
+	cp -f $(VENDOR_SDK_DIR)/ld/eagle.app.v6.ld $(VENDOR_SDK_DIR)/ld/eagle.app.v6.irom.ld
+	cp -f $(VENDOR_SDK_DIR)/ld/eagle.app.v6.new.2048.ld $(VENDOR_SDK_DIR)/ld/eagle.app.v6.new.2048.irom.ld
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < ld-script-irom.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 

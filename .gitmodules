@@ -1,14 +1,25 @@
 [submodule "crosstool-NG"]
 	path = crosstool-NG
 	url = https://github.com/jcmvbkbc/crosstool-NG
-	branch = lx106-g++
+	branch = xtensa-1.22.x
 [submodule "lx106-hal"]
 	path = lx106-hal
 	url = https://github.com/tommie/lx106-hal
 [submodule "esptool"]
 	path = esptool
-	url = https://github.com/pfalcon/esptool
+	url = https://github.com/themadinventor/esptool.git
 [submodule "esp-open-lwip"]
 	path = esp-open-lwip
 	url = https://github.com/pfalcon/esp-open-lwip
 	branch = sdk-1.5.0
+[submodule "esp_newlib_port"]
+	path = esp_newlib_port
+	url = https://github.com/Sermus/esp_newlib_port.git
+	branch = lx106
+[submodule "examples/esp8266_sgi_stl_tests"]
+	path = examples/esp8266_sgi_stl_tests
+	url = https://github.com/Sermus/esp8266_sgi_stl_tests.git
+[submodule "esp_stdcpp_port"]
+	path = esp_stdcpp_port
+	url = https://github.com/Sermus/esp_stdcpp_port.git
+	branch = lx106
