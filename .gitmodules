@@ -20,3 +20,6 @@
 	path = esp_stdcpp_port
 	url = https://github.com/Sermus/esp_stdcpp_port.git
 	branch = lx106
+[submodule "examples/esp8266_sgi_stl_tests"]
+	path = examples/esp8266_sgi_stl_tests
+	url = https://github.com/Sermus/esp8266_sgi_stl_tests.git
