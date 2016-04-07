@@ -1,6 +1,5 @@
---- esp_iot_sdk_v1.5.2/ld/eagle.app.v6.irom.ld.orig	2016-03-28 16:48:11.422256241 +0300
-+++ esp_iot_sdk_v1.5.2/ld/eagle.app.v6.irom.ld	2016-03-29 07:47:48.860099060 +0300
- PHDRS
+--- esp_iot_sdk_v1.5.2/ld/eagle.app.v6.irom.ld.orig	2016-04-01 09:11:42.171496836 +0300
++++ esp_iot_sdk_v1.5.2/ld/eagle.app.v6.irom.ld	2016-04-07 09:52:31.502596929 +0300
 @@ -102,11 +102,14 @@
      *(.gnu.linkonce.e.*)
      *(.gnu.version_r)
@@ -24,8 +23,8 @@
 +  {
 +    _irom0_text_start = ABSOLUTE(.);
 +    *(.irom0.literal .irom.literal .irom.text.literal .irom0.text .irom.text)
-+    *(.literal.* .text.*)
 +    *libm.a:(.literal .text .literal.* .text.*)
++    *irom.a:(.literal .text .literal.* .text.*)
 +    _irom0_text_end = ABSOLUTE(.);
 +  } >irom0_0_seg :irom0_0_phdr
 +
@@ -57,10 +56,8 @@
  /* get ROM code address */
  INCLUDE "../ld/eagle.rom.addr.v6.ld"
 +
-
---- esp_iot_sdk_v1.5.2/ld/eagle.app.v6.new.2048.irom.ld.orig	2016-03-28 16:48:11.422256241 +0300
-+++ esp_iot_sdk_v1.5.2/ld/eagle.app.v6.new.2048.irom.ld	2016-03-29 07:47:48.860099060 +0300
- PHDRS
+--- esp_iot_sdk_v1.5.2/ld/eagle.app.v6.new.2048.irom.ld.orig	2016-04-01 09:11:42.175496836 +0300
++++ esp_iot_sdk_v1.5.2/ld/eagle.app.v6.new.2048.irom.ld	2016-04-07 09:53:01.086596929 +0300
 @@ -102,11 +102,14 @@
      *(.gnu.linkonce.e.*)
      *(.gnu.version_r)
@@ -84,8 +81,8 @@
 +  {
 +    _irom0_text_start = ABSOLUTE(.);
 +    *(.irom0.literal .irom.literal .irom.text.literal .irom0.text .irom.text)
-+    *(.literal.* .text.*)
 +    *libm.a:(.literal .text .literal.* .text.*)
++    *irom.a:(.literal .text .literal.* .text.*)
 +    _irom0_text_end = ABSOLUTE(.);
 +  } >irom0_0_seg :irom0_0_phdr
 +
