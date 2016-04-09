@@ -12,7 +12,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 # for supported versions.
 VENDOR_SDK = 1.5.2
 
-.PHONY: crosstool-NG toolchain libhal libcirom libstdc++irom libnewlibport libstdc++port sdk
+.PHONY: crosstool-NG toolchain libhal romizedlibs libnewlibport libstdc++port sdk
 
 
 
@@ -65,7 +65,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom libstdc++irom libnewlibport libstdc++port standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool romizedlibs libnewlibport libstdc++port standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -142,6 +142,8 @@ crosstool-NG/bootstrap:
 	@echo "You cloned without --recursive, fetching submodules for you."
 	git submodule update --init --recursive
 
+romizedlibs: libcirom libstdc++irom libmirom
+
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libc.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
@@ -153,6 +155,13 @@ libstdc++irom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++irom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libstdc++.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo "Creating irom version of libstdc++..."
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
+		--rename-section .literal=.irom0.literal $(<) $(@);
+
+libmirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libmirom.a
+
+$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libmirom.a: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libm.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	@echo "Creating irom version of libm..."
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy --rename-section .text=.irom0.text \
 		--rename-section .literal=.irom0.literal $(<) $(@);
 
