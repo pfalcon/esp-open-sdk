@@ -7,7 +7,7 @@
 	url = https://github.com/tommie/lx106-hal
 [submodule "esptool"]
 	path = esptool
-	url = https://github.com/pfalcon/esptool
+	url = https://github.com/themadinventor/esptool
 [submodule "esp-open-lwip"]
 	path = esp-open-lwip
 	url = https://github.com/pfalcon/esp-open-lwip
