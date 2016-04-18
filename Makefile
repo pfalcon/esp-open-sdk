@@ -101,6 +101,7 @@ endif
 clean: clean-sdk
 	make -C crosstool-NG clean MAKELEVEL=0
 	make -C esp_newlib_port clean MAKELEVEL=0
+	make -C esp_stdcpp_port clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
 	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
