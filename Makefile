@@ -10,7 +10,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
 # Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
 # for supported versions.
-VENDOR_SDK = 1.5.2
+VENDOR_SDK = 1.5.3
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
@@ -23,6 +23,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
+VENDOR_SDK_DIR_1.5.3 = esp_iot_sdk_v1.5.3
 VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
 VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.1 = ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip
@@ -166,6 +168,12 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 
 sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_1.5.3:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010503" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
+	@touch $@
+
 .sdk_patch_1.5.2:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
@@ -290,6 +298,8 @@ lwip: toolchain sdk_patch
 	    esp-open-lwip/include/lwipopts.h \
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 
+ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1350"
 ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
 ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip:
