@@ -148,7 +148,7 @@ build a new SDK, run:
 $ make clean
 $ git pull
 $ git submodule sync
-$ git submodule update
+$ git submodule update --init
 ```
 
 If you don't issue `make clean` (which causes toolchain and SDK to be
