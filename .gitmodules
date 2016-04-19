@@ -11,4 +11,4 @@
 [submodule "esp-open-lwip"]
 	path = esp-open-lwip
 	url = https://github.com/pfalcon/esp-open-lwip
-	branch = sdk-1.5.0
+	branch = sdk-1.5.0-default-mss
