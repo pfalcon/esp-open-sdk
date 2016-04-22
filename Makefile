@@ -24,7 +24,7 @@ VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
 VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
-VENDOR_SDK_DIR_1.5.3 = esp_iot_sdk_v1.5.3
+VENDOR_SDK_DIR_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18/ESP8266_NONOS_SDK
 VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
 VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.1 = ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip
@@ -302,7 +302,7 @@ ifeq ($(STANDALONE),y)
 endif
 
 ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1350"
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1361"
 ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
 ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip:
