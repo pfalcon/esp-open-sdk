@@ -47,7 +47,7 @@ Ubuntu 14.04:
 ```
 $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python python-serial sed \
-    git unzip bash
+    git unzip bash help2man
 ```
 
 Later Debian/Ubuntu versions may require:
