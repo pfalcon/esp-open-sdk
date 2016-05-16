@@ -174,7 +174,7 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 
-.sdk_patch_1.5.2: Patch01_for_ESP8266_NONOS_SDK_V1.zip
+.sdk_patch_1.5.2: Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip
 	mv libssl.a libnet80211.a libmain.a $(VENDOR_SDK_DIR_1.5.2)/lib/
