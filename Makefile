@@ -368,7 +368,7 @@ libsmartconfig_2.4.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=585"
 lib_mem_optimize_150714.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
-Patch01_for_ESP8266_NONOS_SDK_V1.zip:
+Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1168"
 
 clean-sdk:
