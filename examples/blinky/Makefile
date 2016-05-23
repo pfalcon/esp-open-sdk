@@ -14,4 +14,4 @@ flash: blinky-0x00000.bin
 	esptool.py write_flash 0 blinky-0x00000.bin 0x40000 blinky-0x40000.bin
 
 clean:
-	rm -f blinky blinky.o blinky-0x00000.bin blinky-0x400000.bin
+	rm -f blinky blinky.o blinky-0x00000.bin blinky-0x40000.bin
