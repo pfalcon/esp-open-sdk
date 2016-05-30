@@ -1,8 +1,7 @@
 FROM ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y update && apt-get install -yq software-properties-common python-software-properties
-RUN add-apt-repository -y multiverse
+RUN . /etc/lsb-release; echo "deb http://archive.ubuntu.com/ubuntu/ $DISTRIB_CODENAME multiverse" >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -yq \
     make \
     unrar \
@@ -27,6 +26,8 @@ RUN apt-get update && apt-get install -yq \
     bash \
     help2man \
     libtool-bin \
+    python \
+    python-dev \
     wget
 
 RUN useradd esp-open-sdk -m -G sudo
