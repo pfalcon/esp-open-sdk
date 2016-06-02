@@ -66,8 +66,17 @@ In addition to the development tools MacOS needs a case-sensitive filesystem.
 You might need to create a virtual disk and build esp-open-sdk on it:
 ```bash
 $ hdiutil create ./esp-open-sdk-buildroot.dmg -volname "esp-open-sdk-buildroot" -size 10g -fs "Case-sensitive HFS+" -type SPARSE
-$ hdiutil mount  -mountpoint ./buildroot ./esp-open-sdk-buildroot.dmg.sparseimage
-$ cd ./buildroot
+$ hdiutil mount  -mountpoint ./esp-open-sdk-buildroot ./esp-open-sdk-buildroot.dmg.sparseimage
+$ cd ./esp-open-sdk-buildroot
+```
+
+This small snippet prepares the `PATH` and mounts the image. Load it with `source ./prepare.sh`.
+
+```bash
+# create as sourceme.sh
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+hdiutil mount  -mountpoint ./esp-open-sdk-buildroot ./esp-open-sdk-buildroot.dmg.sparseimage
+cd ./esp-open-sdk-buildroot
 ```
 
 Building
