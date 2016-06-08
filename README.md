@@ -46,8 +46,8 @@ Please make sure that the machine you use to build the toolchain has at least
 Ubuntu 14.04:
 ```
 $ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
-    flex bison texinfo gawk ncurses-dev libexpat-dev python python-serial sed \
-    git unzip bash help2man
+    flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python-serial \
+    sed git unzip bash help2man
 ```
 
 Later Debian/Ubuntu versions may require:
