@@ -176,8 +176,11 @@ $(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
 
 sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 
-.sdk_patch_1.5.4:
+.sdk_patch_1.5.4: ESP8266_NONOS_SDK_V1.5.4.1_patch_20160704.zip
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010504" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(UNZIP) ESP8266_NONOS_SDK_V1.5.4.1_patch_20160704.zip -x "__MACOSX/*"
+	mv libat.a liblwip.a libmain.a libpp.a libwpa.a $(VENDOR_SDK_DIR_1.5.4)/lib/
+	mv esp_init_data_default.bin $(VENDOR_SDK_DIR_1.5.4)/bin/
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
@@ -386,6 +389,8 @@ lib_mem_optimize_150714.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
 Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1168"
+ESP8266_NONOS_SDK_V1.5.4.1_patch_20160704.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1572"
 
 clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
