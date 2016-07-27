@@ -23,6 +23,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip
+VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19
 VENDOR_SDK_ZIP_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip
 VENDOR_SDK_DIR_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20
 VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
@@ -168,6 +170,12 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
+$(VENDOR_SDK_DIR_2.0.0)/.dir: $(VENDOR_SDK_ZIP_2.0.0)
+	$(UNZIP) $^
+	mv ESP8266_NONOS_SDK $(VENDOR_SDK_DIR_2.0.0)
+	-mv License $(VENDOR_SDK_DIR)
+	touch $@
+
 $(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
 	$(UNZIP) $^
 	mv ESP8266_NONOS_SDK $(VENDOR_SDK_DIR_1.5.4)
@@ -175,6 +183,12 @@ $(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
 	touch $@
 
 sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
+
+.sdk_patch_2.0.0:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020000" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
+	@touch $@
 
 .sdk_patch_1.5.4:
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010504" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
@@ -317,6 +331,8 @@ ifeq ($(STANDALONE),y)
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 endif
 
+ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1613"
 ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1469"
 ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip:
