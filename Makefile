@@ -318,11 +318,11 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	cp FRM_ERR_PATCH/*.a $(VENDOR_SDK_DIR)/lib/
 	@touch $@
 
-empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
+empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc $(VENDOR_SDK_DIR)/.dir
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -I$(VENDOR_SDK_DIR)/include -c $<
 
-user_rf_cal_sector_set.o: user_rf_cal_sector_set.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -c $<
+user_rf_cal_sector_set.o: user_rf_cal_sector_set.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc $(VENDOR_SDK_DIR)/.dir
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -I$(VENDOR_SDK_DIR)/include -c $<
 
 lwip: toolchain sdk_patch
 ifeq ($(STANDALONE),y)
@@ -411,6 +411,7 @@ clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
 	rm -f sdk
 	rm -f .sdk_patch_$(VENDOR_SDK)
+	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
 	make -C esp-open-lwip -f Makefile.open clean
 
 
