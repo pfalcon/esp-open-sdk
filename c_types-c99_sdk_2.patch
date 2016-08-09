@@ -1,0 +1,34 @@
+--- ESP8266_NONOS_SDK/include/c_types.h.orig	2016-07-18 15:16:07.000000000 +0100
++++ ESP8266_NONOS_SDK/include/c_types.h	2016-08-10 00:36:51.216294997 +0100
+@@ -6,17 +6,13 @@
+ #ifndef _C_TYPES_H_
+ #define _C_TYPES_H_
+ 
+-typedef unsigned char       uint8_t;
++#include <stdbool.h>
++#include <stdint.h>
++
+ typedef signed char         sint8_t;
+-typedef signed char         int8_t;
+-typedef unsigned short      uint16_t;
+ typedef signed short        sint16_t;
+-typedef signed short        int16_t;
+-typedef unsigned int        uint32_t;
+ typedef signed long         sint32_t;
+-typedef signed int          int32_t;
+ typedef signed long long    sint64_t;
+-typedef unsigned long long  uint64_t;
+ typedef unsigned long long  u_int64_t;
+ typedef float               real32_t;
+ typedef double              real64_t;
+@@ -82,10 +78,7 @@
+ #define STORE_ATTR __attribute__((aligned(4)))
+ 
+ #ifndef __cplusplus
+-typedef unsigned char   bool;
+ #define BOOL            bool
+-#define true            (1)
+-#define false           (0)
+ #define TRUE            true
+ #define FALSE           false
+ 
