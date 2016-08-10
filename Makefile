@@ -1,12 +1,14 @@
 TOP = $(PWD)
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
-VENDOR_SDK = 1.5.2
+VENDOR_SDK = 2.0.0
 
 UNZIP = unzip -q -o
 
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip
+VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK
 VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
 VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.0 = esp_iot_sdk_v1.5.0_15_11_27.zip
@@ -51,7 +53,7 @@ STANDALONE = y
 .PHONY: crosstool-NG toolchain libhal sdk
 
 LIBHAL := $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
-LIBGCC := $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/4.8.2/libgcc.a
+LIBGCC := $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/4.8.5/libgcc.a
 
 all: esptool standalone sdk .sdk_patch $(LIBHAL) $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 	@echo
@@ -80,6 +82,11 @@ esptool: toolchain
 			--rename-section .irom0.text=.text \
 			$$l; \
 	done
+	@touch $@
+
+.sdk_patch_2.0.0:
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	patch -N -d $(VENDOR_SDK_DIR_2.0.0) -p1 < c_types-c99_sdk_2.patch
 	@touch $@
 
 .sdk_patch_1.5.2:
@@ -226,6 +233,9 @@ $(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
 	-mv License $(VENDOR_SDK_DIR)
 	touch $@
 
+ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1613"
+
 ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1079"
 
@@ -304,6 +314,7 @@ _libhal:
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc .patch_libgcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
+	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
 	make -C crosstool-NG -f ../Makefile _toolchain
 
 .patch_libgcc: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
@@ -318,7 +329,6 @@ _toolchain:
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
 	rm -f local-patches/gdb/7.5.1/*
-	cp ../0000-gdb-7.5.1-sysprogs.patch local-patches/gdb/7.5.1
 	./ct-ng build
 
 
