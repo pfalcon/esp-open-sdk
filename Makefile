@@ -229,8 +229,10 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < dhcps_lease.patch
 	@touch $@
 
-.sdk_patch_1.3.0:
+.sdk_patch_1.3.0: user_interface.zip
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010300" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(UNZIP) $<
+	mv user_interface.h $(VENDOR_SDK_DIR_1.3.0)/include/
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
@@ -406,6 +408,8 @@ lib_mem_optimize_150714.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=594"
 Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1168"
+user_interface.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=885"
 
 clean-sdk:
 	rm -rf $(VENDOR_SDK_DIR)
