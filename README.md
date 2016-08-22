@@ -58,7 +58,7 @@ $ sudo apt-get install libtool-bin
 ## MacOS:
 ```bash
 $ brew tap homebrew/dupes
-$ brew install binutils coreutils automake wget gawk libtool gperf gnu-sed --with-default-names grep
+$ brew install binutils coreutils automake wget gawk libtool gperf gnu-sed help2man --with-default-names grep
 $ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
