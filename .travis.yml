@@ -5,12 +5,6 @@ compiler:
   - gcc
 
 before_script:
-  - sudo add-apt-repository main
-  - sudo add-apt-repository universe
-  - sudo add-apt-repository restricted
-  - sudo add-apt-repository multiverse
-
-  - sudo apt-get install -y make unrar autoconf automake libtool gcc g++ gperf flex bison texinfo gawk \
-    ncurses-dev libexpat-dev python-dev python python-serial sed git unzip bash help2man wget bzip2
+  - sudo apt-get install -y make unrar autoconf automake libtool gcc g++ gperf flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python-serial sed git unzip bash help2man wget bzip2
 script:
   - make
