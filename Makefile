@@ -23,8 +23,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
-VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip
-VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19
+VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_08_10.zip
+VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_08_10
 VENDOR_SDK_ZIP_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip
 VENDOR_SDK_DIR_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20
 VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
@@ -337,8 +337,8 @@ ifeq ($(STANDALONE),y)
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 endif
 
-ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1613"
+ESP8266_NONOS_SDK_V2.0.0_16_08_10.zip:
+	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1690"
 ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1469"
 ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip:
