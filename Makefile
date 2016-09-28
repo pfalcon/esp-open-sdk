@@ -10,7 +10,7 @@ TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
 # Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
 # for supported versions.
-VENDOR_SDK = 1.5.4
+VENDOR_SDK = 2.0.0
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
@@ -23,8 +23,8 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
-VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip
-VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_07_19
+VENDOR_SDK_ZIP_2.0.0 = esp8266_nonos_sdk_v2.0.0_16_08_10.zip
+VENDOR_SDK_DIR_2.0.0 = esp8266_nonos_sdk_v2.0.0_16_08_10
 VENDOR_SDK_ZIP_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip
 VENDOR_SDK_DIR_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20
 VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
@@ -337,8 +337,8 @@ ifeq ($(STANDALONE),y)
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 endif
 
-ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip:
-	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1613"
+esp8266_nonos_sdk_v2.0.0_16_08_10.zip:
+	wget --content-disposition "http://espressif.com/sites/default/files/sdks/esp8266_nonos_sdk_v2.0.0_16_08_10.zip"
 ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1469"
 ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip:
