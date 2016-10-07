@@ -139,6 +139,11 @@ $ xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
 
 The extra -I and -L flags are not needed when using the standalone SDK.
 
+Subdirectory `examples/` contains some example application(s) which
+can be built with esp-open-sdk. If you are interested in real-world,
+full-fledged, advanced example of a project built using esp-open-sdk,
+check https://github.com/micropython/micropython/tree/master/esp8266 .
+
 Pulling updates
 ===============
 The project is updated from time to time, to get updates and prepare to
