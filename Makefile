@@ -105,6 +105,16 @@ clean: clean-sdk
 	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
 
+clean-sdk:
+	rm -rf $(VENDOR_SDK_DIR)
+	rm -f sdk
+	rm -f .sdk_patch_$(VENDOR_SDK)
+	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
+	make -C esp-open-lwip -f Makefile.open clean
+
+clean-sysroot:
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
+	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
 
 
 esptool: toolchain
@@ -123,9 +133,6 @@ _toolchain:
 	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
 
-clean-sysroot:
-	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
-	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
 
 crosstool-NG: crosstool-NG/ct-ng
 
@@ -414,18 +421,3 @@ Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1168"
 ESP8266_NONOS_SDK_V2.0.0_patch_16_08_09.zip:
 	wget --content-disposition "http://bbs.espressif.com/download/file.php?id=1654"
-
-clean-sdk:
-	rm -rf $(VENDOR_SDK_DIR)
-	rm -f sdk
-	rm -f .sdk_patch_$(VENDOR_SDK)
-	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
-	make -C esp-open-lwip -f Makefile.open clean
-
-
-
-
-
-
-
-
