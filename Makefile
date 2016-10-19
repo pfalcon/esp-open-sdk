@@ -125,6 +125,7 @@ toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
 	make -C crosstool-NG -f ../Makefile _toolchain
+	cp -f specs $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/4.8.5
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
