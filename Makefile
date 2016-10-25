@@ -165,9 +165,9 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-
 
 _libhal:
 	autoreconf -i
-	PATH=$(TOOLCHAIN)/bin:$(PATH) ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
+	PATH="$(TOOLCHAIN)/bin:$(PATH)" ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr
+	PATH="$(TOOLCHAIN)/bin:$(PATH)" make
+	PATH="$(TOOLCHAIN)/bin:$(PATH)" make install
 
 
 
