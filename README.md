@@ -45,7 +45,7 @@ Please make sure that the machine you use to build the toolchain has at least
 
 Ubuntu 14.04:
 ```
-$ sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf \
+$ sudo apt-get install make unrar-free autoconf automake libtool gcc g++ gperf \
     flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python-serial \
     sed git unzip bash help2man wget bzip2
 ```
@@ -58,7 +58,7 @@ $ sudo apt-get install libtool-bin
 ## MacOS:
 ```bash
 $ brew tap homebrew/dupes
-$ brew install binutils coreutils automake wget gawk libtool gperf gnu-sed --with-default-names grep
+$ brew install binutils coreutils automake wget gawk libtool help2man gperf gnu-sed --with-default-names grep
 $ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 ```
 
@@ -138,6 +138,11 @@ $ xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
 ```
 
 The extra -I and -L flags are not needed when using the standalone SDK.
+
+Subdirectory `examples/` contains some example application(s) which
+can be built with esp-open-sdk. If you are interested in real-world,
+full-fledged, advanced example of a project built using esp-open-sdk,
+check https://github.com/micropython/micropython/tree/master/esp8266 .
 
 Pulling updates
 ===============
