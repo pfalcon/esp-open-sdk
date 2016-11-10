@@ -1,0 +1,9 @@
+*lib:
+--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lc --end-group %{!T:-Teagle.app.v6.ld}
+
+*startfile:
+
+
+*endfile:
+
+
