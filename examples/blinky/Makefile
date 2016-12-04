@@ -1,17 +1,14 @@
-CC = xtensa-lx106-elf-gcc
-CFLAGS = -I. -mlongcalls
-LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -Wl,--end-group -lgcc
-LDFLAGS = -Teagle.app.v6.ld
+PROGRAM        = blinky
 
-blinky-0x00000.bin: blinky
-	esptool.py elf2image $^
+# these values are set automatically
+# uncomment and change them to override defauls
+#
+# FLASH_SIZE     = 8m
+# FLASH_MODE     = dio
+# ESPBAUD        = 115200
+# ESPPORT        = /dev/ttyUSB0
 
-blinky: blinky.o
+LIBS           = gcc
+SDK_LIBS       = main net80211 lwip phy pp wpa
 
-blinky.o: blinky.c
-
-flash: blinky-0x00000.bin
-	esptool.py write_flash 0 blinky-0x00000.bin 0x40000 blinky-0x40000.bin
-
-clean:
-	rm -f blinky blinky.o blinky-0x00000.bin blinky-0x40000.bin
+include $(ESP_OPEN_SDK)/common.mk
