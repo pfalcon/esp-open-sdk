@@ -7,10 +7,14 @@ STANDALONE = y
 # Directory to install toolchain to, by default inside current dir.
 TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
-
 # Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
 # for supported versions.
 VENDOR_SDK = 2.0.0
+
+# Check standard Python version of the host, as esptool requires python 2
+PYV = $(shell python -c 'import sys; print(sys.version_info[0]);')
+# Check if a python2 version is installed in parallel
+PYV2 = $(shell python2 -c 'import sys; print(sys.version_info[0]);')
 
 .PHONY: crosstool-NG toolchain libhal libcirom sdk
 
@@ -87,6 +91,18 @@ else
 	@echo "Espressif ESP8266 SDK is installed, its libraries and headers are merged with the toolchain"
 	@echo
 endif
+ifeq ($(PYV),3)
+	@echo "Local python installation points to Python $(PYV)." 
+	@echo "esptool.py requires python 2 to run."
+ifeq ($(PYV2),2)
+	@echo "Python2 is installed already, run"
+else
+	@echo "Please install python version 2.X in addtion and call"
+endif
+	@echo "make patch_esptool"
+	@echo "to modify esptool to be called exclusively via python2"
+
+endif
 
 standalone: sdk sdk_patch toolchain
 ifeq ($(STANDALONE),y)
@@ -119,6 +135,9 @@ clean-sysroot:
 
 esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
+
+patch_esptool:
+	sed -i -e '1 s%python%python2%' $(TOOLCHAIN)/bin/esptool.py
 
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
