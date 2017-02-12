@@ -6,3 +6,9 @@ directory contains just Makefiles for examples available elsewhere.
 If you know about good examples to be included here with explicit
 licensing terms (public domain is recommended, otherwise MIT/BSD is
 OK), please let a maintainer know.
+
+If you are able to compile an example and flash it successfully, 
+but your esp enters a bootloop, you may need to flash
+esp_init_data_default.bin and blank.bin to the correct addresses.
+Both of these files and the corresponding addresses for various
+flash sizes can be found in the sdk bin directory. 
