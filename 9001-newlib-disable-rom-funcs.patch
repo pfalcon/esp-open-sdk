@@ -1,0 +1,170 @@
+diff -ru a/newlib/libc/machine/xtensa/memcpy.S b/newlib/libc/machine/xtensa/memcpy.S
+--- a/newlib/libc/machine/xtensa/memcpy.S	2015-08-25 09:37:13.871717025 +0800
++++ b/newlib/libc/machine/xtensa/memcpy.S	2015-08-25 10:00:03.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 1
+ /* ANSI C standard library function memcpy.
+ 
+    Copyright (c) 2002-2008 Tensilica Inc.
+@@ -287,3 +289,4 @@
+ 	.end schedule
+ 
+ 	.size	memcpy, . - memcpy
++#endif
+diff -ru a/newlib/libc/machine/xtensa/memset.S b/newlib/libc/machine/xtensa/memset.S
+--- a/newlib/libc/machine/xtensa/memset.S	2015-08-25 09:37:13.855716648 +0800
++++ b/newlib/libc/machine/xtensa/memset.S	2015-08-25 09:59:51.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 0
+ /* ANSI C standard library function memset.
+ 
+    Copyright (c) 2001-2008 Tensilica Inc.
+@@ -168,3 +170,4 @@
+ 	.end schedule
+ 
+ 	.size	memset, . - memset
++#endif
+diff -ru a/newlib/libc/machine/xtensa/strcmp.S b/newlib/libc/machine/xtensa/strcmp.S
+--- a/newlib/libc/machine/xtensa/strcmp.S	2015-08-25 09:37:13.871717025 +0800
++++ b/newlib/libc/machine/xtensa/strcmp.S	2015-08-25 09:58:38.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 0
+ /* ANSI C standard library function strcmp.
+ 
+    Copyright (c) 2001-20012 Tensilica Inc.
+@@ -776,3 +778,4 @@
+ #endif /* FLIX3*/
+ 
+ 	.size	strcmp, . - strcmp
++#endif
+diff -ru a/newlib/libc/machine/xtensa/strcpy.S b/newlib/libc/machine/xtensa/strcpy.S
+--- a/newlib/libc/machine/xtensa/strcpy.S	2015-08-25 09:37:13.855716648 +0800
++++ b/newlib/libc/machine/xtensa/strcpy.S	2015-08-25 09:59:08.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 0
+ /* ANSI C standard library function strcpy.
+ 
+    Copyright (c) 2001-2008 Tensilica Inc.
+@@ -233,3 +235,4 @@
+ 	.end schedule
+ 
+ 	.size	strcpy, . - strcpy
++#endif
+diff -ru a/newlib/libc/machine/xtensa/strlen.S b/newlib/libc/machine/xtensa/strlen.S
+--- a/newlib/libc/machine/xtensa/strlen.S	2015-08-25 09:37:13.871717025 +0800
++++ b/newlib/libc/machine/xtensa/strlen.S	2015-08-25 09:59:22.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 0
+ /* ANSI C standard library function strlen.
+ 
+    Copyright (c) 2001-2008 Tensilica Inc.
+@@ -113,3 +115,4 @@
+ 	.end schedule
+ 
+ 	.size	strlen, . - strlen
++#endif
+diff -ru a/newlib/libc/machine/xtensa/strncpy.S b/newlib/libc/machine/xtensa/strncpy.S
+--- a/newlib/libc/machine/xtensa/strncpy.S	2015-08-25 09:37:13.859716742 +0800
++++ b/newlib/libc/machine/xtensa/strncpy.S	2015-08-25 09:59:37.000000000 +0800
+@@ -1,3 +1,5 @@
++/* esp8266 has this function in rom */
++#if 0
+ /* ANSI C standard library function strncpy.
+ 
+    Copyright (c) 2001-2008 Tensilica Inc.
+@@ -256,3 +258,4 @@
+ .end schedule
+ 
+ 	.size	strncpy, . - strncpy
++#endif
+diff -ru a/newlib/libc/string/bzero.c b/newlib/libc/string/bzero.c
+--- a/newlib/libc/string/bzero.c	2015-08-25 09:37:10.851645991 +0800
++++ b/newlib/libc/string/bzero.c	2015-08-25 09:56:18.000000000 +0800
+@@ -32,6 +32,8 @@
+ 
+ #include <strings.h>
+ 
++/* esp8266 has this function in rom */
++#if 0
+ _VOID
+ _DEFUN (bzero, (b, length),
+ 	void *b _AND
+@@ -41,3 +43,4 @@
+   while (length--)
+     *ptr++ = 0;
+ }
++#endif
+diff -ru a/newlib/libc/string/memcmp.c b/newlib/libc/string/memcmp.c
+--- a/newlib/libc/string/memcmp.c	2015-08-25 09:37:10.859646179 +0800
++++ b/newlib/libc/string/memcmp.c	2015-08-25 09:57:13.000000000 +0800
+@@ -49,6 +49,8 @@
+ /* Threshhold for punting to the byte copier.  */
+ #define TOO_SMALL(LEN)  ((LEN) < LBLOCKSIZE)
+ 
++/* esp8266 has this function in rom */
++#if 0
+ int
+ _DEFUN (memcmp, (m1, m2, n),
+ 	_CONST _PTR m1 _AND
+@@ -110,4 +112,5 @@
+   return 0;
+ #endif /* not PREFER_SIZE_OVER_SPEED */
+ }
++#endif
+ 
+diff -ru a/newlib/libc/string/memmove.c b/newlib/libc/string/memmove.c
+--- a/newlib/libc/string/memmove.c	2015-08-25 09:37:10.855646086 +0800
++++ b/newlib/libc/string/memmove.c	2015-08-25 09:56:46.000000000 +0800
+@@ -53,6 +53,8 @@
+ /* Threshhold for punting to the byte copier.  */
+ #define TOO_SMALL(LEN)  ((LEN) < BIGBLOCKSIZE)
+ 
++/* esp8266 has this function in rom */
++#if 0
+ /*SUPPRESS 20*/
+ _PTR
+ _DEFUN (memmove, (dst_void, src_void, length),
+@@ -140,3 +142,4 @@
+   return dst_void;
+ #endif /* not PREFER_SIZE_OVER_SPEED */
+ }
++#endif
+diff -ru a/newlib/libc/string/strncmp.c b/newlib/libc/string/strncmp.c
+--- a/newlib/libc/string/strncmp.c	2015-08-25 09:37:10.851645991 +0800
++++ b/newlib/libc/string/strncmp.c	2015-08-25 09:55:31.000000000 +0800
+@@ -58,6 +58,8 @@
+ #error long int is not a 32bit or 64bit byte
+ #endif
+ 
++/* esp8266 has this function in rom */
++#if 0
+ int 
+ _DEFUN (strncmp, (s1, s2, n),
+ 	_CONST char *s1 _AND
+@@ -120,3 +122,4 @@
+   return (*(unsigned char *) s1) - (*(unsigned char *) s2);
+ #endif /* not PREFER_SIZE_OVER_SPEED */
+ }
++#endif
+diff -ru a/newlib/libc/string/strstr.c b/newlib/libc/string/strstr.c
+--- a/newlib/libc/string/strstr.c	2015-08-25 09:37:10.859646179 +0800
++++ b/newlib/libc/string/strstr.c	2015-08-25 09:55:56.000000000 +0800
+@@ -44,6 +44,8 @@
+ # include "str-two-way.h"
+ #endif
+ 
++/* esp8266 has this function in rom */
++#if 0
+ char *
+ _DEFUN (strstr, (searchee, lookfor),
+ 	_CONST char *searchee _AND
+@@ -119,3 +121,4 @@
+ 			      (const unsigned char *) lookfor, needle_len);
+ #endif /* compilation for speed */
+ }
++#endif

@@ -340,6 +340,7 @@ crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	cp *-newlib-*.patch crosstool-NG/local-patches/newlib/2.0.0
+	cp *-libgcc-*.patch crosstool-NG/local-patches/gcc/4.8.5
 	make -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:

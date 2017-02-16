@@ -1,0 +1,63 @@
+diff -ru a/libgcc/config/xtensa/t-xtensa b/libgcc/config/xtensa/t-xtensa
+--- a/libgcc/config/xtensa/t-xtensa	2015-08-25 10:24:19.439057512 +0800
++++ b/libgcc/config/xtensa/t-xtensa	2015-08-25 10:26:34.462308416 +0800
+@@ -1,13 +1,12 @@
+ LIB1ASMSRC = xtensa/lib1funcs.S
+-LIB1ASMFUNCS = _mulsi3 _divsi3 _modsi3 _udivsi3 _umodsi3 \
+-	_umulsidi3 _clz _clzsi2 _ctzsi2 _ffssi2 \
++LIB1ASMFUNCS = _mulsi3 _modsi3 \
++	_clz _clzsi2 _ctzsi2 _ffssi2 \
+ 	_ashldi3 _ashrdi3 _lshrdi3 \
+-	_negsf2 _addsubsf3 _mulsf3 _divsf3 _cmpsf2 _fixsfsi _fixsfdi \
+-	_fixunssfsi _fixunssfdi _floatsisf _floatunsisf \
++	_negsf2 _mulsf3 _divsf3 _cmpsf2 _fixsfsi _fixsfdi \
++	_fixunssfdi \
+ 	_floatdisf _floatundisf \
+-	_negdf2 _addsubdf3 _muldf3 _divdf3 _cmpdf2 _fixdfsi _fixdfdi \
+-	_fixunsdfsi _fixunsdfdi _floatsidf _floatunsidf \
+-	_floatdidf _floatundidf \
+-	_truncdfsf2 _extendsfdf2
++	_negdf2 _cmpdf2 _fixdfdi \
++	_fixunsdfdi \
++	_floatdidf _floatundidf
+ 
+ LIB2ADD = $(srcdir)/config/xtensa/lib2funcs.S
+diff -ru a/libgcc/Makefile.in b/libgcc/Makefile.in
+--- a/libgcc/Makefile.in	2015-08-25 10:24:19.427057223 +0800
++++ b/libgcc/Makefile.in	2015-08-25 10:27:39.511874029 +0800
+@@ -245,7 +245,7 @@
+ 
+ # These might cause a divide overflow trap and so are compiled with
+ # unwinder info.
+-LIB2_DIVMOD_FUNCS = _divdi3 _moddi3 _udivdi3 _umoddi3 _udiv_w_sdiv _udivmoddi4
++LIB2_DIVMOD_FUNCS = _moddi3 _udiv_w_sdiv _udivmoddi4
+ 
+ # List of extra C and assembler files to add to static and shared libgcc2.
+ # Assembler files should have names ending in `.S'.
+@@ -401,7 +401,7 @@
+ LIB2ADDEHSHARED += $(srcdir)/emutls.c
+ 
+ # Library members defined in libgcc2.c.
+-lib2funcs = _muldi3 _negdi2 _lshrdi3 _ashldi3 _ashrdi3 _cmpdi2 _ucmpdi2	   \
++lib2funcs = _negdi2 _lshrdi3 _ashldi3 _ashrdi3 _cmpdi2 _ucmpdi2	   \
+ 	    _clear_cache _trampoline __main _absvsi2 \
+ 	    _absvdi2 _addvsi3 _addvdi3 _subvsi3 _subvdi3 _mulvsi3 _mulvdi3 \
+ 	    _negvsi2 _negvdi2 _ctors _ffssi2 _ffsdi2 _clz _clzsi2 _clzdi2  \
+@@ -412,7 +412,7 @@
+ 
+ # The floating-point conversion routines that involve a single-word integer.
+ # XX stands for the integer mode.
+-swfloatfuncs = $(patsubst %,_fixuns%XX,sf df xf)
++swfloatfuncs = $(patsubst %,_fixuns%XX,xf)
+ 
+ # Likewise double-word routines.
+ dwfloatfuncs = $(patsubst %,_fix%XX,sf df xf tf) \
+@@ -427,7 +427,7 @@
+ 
+ # These might cause a divide overflow trap and so are compiled with
+ # unwinder info.
+-LIB2_DIVMOD_FUNCS = _divdi3 _moddi3 _udivdi3 _umoddi3 _udiv_w_sdiv _udivmoddi4
++LIB2_DIVMOD_FUNCS = _moddi3 _udiv_w_sdiv _udivmoddi4
+ 
+ # Remove any objects from lib2funcs and LIB2_DIVMOD_FUNCS that are
+ # defined as optimized assembly code in LIB1ASMFUNCS or as C code
