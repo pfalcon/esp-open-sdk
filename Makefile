@@ -17,7 +17,7 @@ VENDOR_SDK = 2.0.0
 
 
 TOP = $(PWD)
-SHELL = /bin/bash
+SHELL := $(shell which bash)
 PATCH = patch -b -N
 UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
@@ -102,7 +102,7 @@ ifeq ($(STANDALONE),y)
 endif
 
 clean: clean-sdk
-	make -C crosstool-NG clean MAKELEVEL=0
+	$(MAKE) -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
 	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
@@ -112,7 +112,7 @@ clean-sdk:
 	rm -f sdk
 	rm -f .sdk_patch_$(VENDOR_SDK)
 	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
-	make -C esp-open-lwip -f Makefile.open clean
+	$(MAKE) -C esp-open-lwip -f Makefile.open clean
 
 clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
@@ -126,12 +126,12 @@ toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
-	make -C crosstool-NG -f ../Makefile _toolchain
+	$(MAKE) -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
-	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	sed -r -i.org s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
 
@@ -139,13 +139,13 @@ _toolchain:
 crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
-	make -C crosstool-NG -f ../Makefile _ct-ng
+	$(MAKE) -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:
 	./bootstrap
 	./configure --prefix=`pwd`
-	make MAKELEVEL=0
-	make install MAKELEVEL=0
+	$(MAKE) MAKELEVEL=0
+	$(MAKE) install MAKELEVEL=0
 
 crosstool-NG/bootstrap:
 	@echo "You cloned without --recursive, fetching submodules for you."
@@ -161,13 +161,13 @@ $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a: $(TOOLCHAIN)/xtensa-lx106-
 libhal: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a
 
 $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-	make -C lx106-hal -f ../Makefile _libhal
+	$(MAKE) -C lx106-hal -f ../Makefile _libhal
 
 _libhal:
 	autoreconf -i
 	PATH=$(TOOLCHAIN)/bin:$(PATH) ./configure --host=xtensa-lx106-elf --prefix=$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make
-	PATH=$(TOOLCHAIN)/bin:$(PATH) make install
+	PATH=$(TOOLCHAIN)/bin:$(PATH) $(MAKE)
+	PATH=$(TOOLCHAIN)/bin:$(PATH) $(MAKE) install
 
 
 
@@ -348,7 +348,7 @@ user_rf_cal_sector_set.o: user_rf_cal_sector_set.c $(TOOLCHAIN)/bin/xtensa-lx106
 
 lwip: toolchain sdk_patch
 ifeq ($(STANDALONE),y)
-	make -C esp-open-lwip -f Makefile.open install \
+	$(MAKE) -C esp-open-lwip -f Makefile.open install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
 	    AR=$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar \
 	    PREFIX=$(TOOLCHAIN)
