@@ -17,7 +17,7 @@ VENDOR_SDK = 2.0.0
 
 
 TOP = $(PWD)
-SHELL = /bin/bash
+SHELL := $(shell which bash)
 PATCH = patch -b -N
 UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
