@@ -17,7 +17,7 @@ VENDOR_SDK = 2.0.0
 
 
 TOP = $(PWD)
-SHELL := $(shell which bash)
+SHELL = /bin/sh
 PATCH = patch -b -N
 UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
@@ -198,14 +198,14 @@ $(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
 sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_2.1.0: user_rf_cal_sector_set.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020100" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020100\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR)/lib/libmain.a user_rf_cal_sector_set.o
 	@touch $@
 
 .sdk_patch_2.0.0: ESP8266_NONOS_SDK_V2.0.0_patch_16_08_09.zip user_rf_cal_sector_set.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020000" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020000\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) ESP8266_NONOS_SDK_V2.0.0_patch_16_08_09.zip
 	mv libmain.a libnet80211.a libpp.a $(VENDOR_SDK_DIR_2.0.0)/lib/
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
@@ -214,19 +214,19 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_1.5.4:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010504" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010504\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.5.3:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010503" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010503\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.5.2: Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010502\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) Patch01_for_ESP8266_NONOS_SDK_V1.5.2.zip
 	mv libssl.a libnet80211.a libmain.a $(VENDOR_SDK_DIR_1.5.2)/lib/
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
@@ -234,30 +234,30 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_1.5.1:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010501" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010501\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.5.0:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010500" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010500\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	@touch $@
 
 .sdk_patch_1.4.0:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010400" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010400\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < dhcps_lease.patch
 	@touch $@
 
 .sdk_patch_1.3.0:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010300" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010300\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.2.0: lib_mem_optimize_150714.zip libssl_patch_1.2.0-2.zip empty_user_rf_pre_init.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010200" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010200\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	#$(UNZIP) libssl_patch_1.2.0-2.zip
 	#$(UNZIP) libsmartconfig_2.4.2.zip
 	$(UNZIP) lib_mem_optimize_150714.zip
@@ -268,7 +268,7 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_1.1.2: scan_issue_test.zip 1.1.2_patch_02.zip empty_user_rf_pre_init.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010102" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010102\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) scan_issue_test.zip
 	$(UNZIP) 1.1.2_patch_02.zip
 	mv libmain.a libnet80211.a libpp.a $(VENDOR_SDK_DIR_1.1.2)/lib/
@@ -277,13 +277,13 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_1.1.1: empty_user_rf_pre_init.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010101" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010101\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -f -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR_1.1.1)/lib/libmain.a empty_user_rf_pre_init.o
 	@touch $@
 
 .sdk_patch_1.1.0: lib_patch_on_sdk_v1.1.0.zip empty_user_rf_pre_init.o
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010100" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010100\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) $<
 	mv libsmartconfig_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libsmartconfig.a
 	mv libmain_patch_01.a $(VENDOR_SDK_DIR_1.1.0)/lib/libmain.a
@@ -293,26 +293,26 @@ sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 	@touch $@
 
 .sdk_patch_1.0.1: libnet80211.zip esp_iot_sdk_v1.0.1/.dir
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) $<
 	mv libnet80211.a $(VENDOR_SDK_DIR_1.0.1)/lib/
 	$(PATCH) -f -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.1b2: libssl.zip esp_iot_sdk_v1.0.1_b2/.dir
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(UNZIP) $<
 	mv libssl/libssl.a $(VENDOR_SDK_DIR_1.0.1b2)/lib/
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.1b1:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010001\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
 .sdk_patch_1.0.0:
-	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010000" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	printf "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 010000\n" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99.patch
 	@touch $@
 
