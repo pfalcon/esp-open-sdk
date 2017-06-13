@@ -113,6 +113,7 @@ clean-sdk:
 	rm -f .sdk_patch_$(VENDOR_SDK)
 	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
 	make -C esp-open-lwip -f Makefile.open clean
+	make -C lwip2 -f Makefile.open clean
 
 clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
@@ -355,6 +356,8 @@ ifeq ($(STANDALONE),y)
 	cp -a esp-open-lwip/include/arch esp-open-lwip/include/lwip esp-open-lwip/include/netif \
 	    esp-open-lwip/include/lwipopts.h \
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
+	make -C lwip2 -f Makefile.open install \
+	    PREFIX=$(TOOLCHAIN)
 endif
 
 
