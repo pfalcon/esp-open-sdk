@@ -3,7 +3,9 @@
 #include "gpio.h"
 #include "os_type.h"
 
-static const int pin = 1;
+// ESP-12 modules have LED on GPIO2. Change to another GPIO
+// for other boards.
+static const int pin = 2;
 static volatile os_timer_t some_timer;
 
 void some_timerfunc(void *arg)
