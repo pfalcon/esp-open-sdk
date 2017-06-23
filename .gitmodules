@@ -12,3 +12,6 @@
 	path = esp-open-lwip
 	url = https://github.com/pfalcon/esp-open-lwip
 	branch = sdk-1.5.0-experimental
+[submodule "lwip2"]
+	path = lwip2
+	url = https://github.com/d-a-v/esp82xx-nonos-linklayer
