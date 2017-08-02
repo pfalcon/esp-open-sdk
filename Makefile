@@ -22,15 +22,23 @@ PATCH = patch -b -N
 UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
+VENDOR_ZIP_DIR = $(VENDOR_ZIP_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_master = ESP8266_NONOS_SDK-master.zip
+VENDOR_ZIP_DIR_master = ESP8266_NONOS_SDK-master
+VENDOR_SDK_DIR_master = esp_nonos_sdk_master
 VENDOR_SDK_ZIP_2.1.0 = ESP8266_NONOS_SDK-2.1.0.zip
-VENDOR_SDK_DIR_2.1.0 = ESP8266_NONOS_SDK-2.1.0
+VENDOR_ZIP_DIR_2.1.0 = ESP8266_NONOS_SDK-2.1.0
+VENDOR_SDK_DIR_2.1.0 = esp_nonos_sdk_v2.1.0
 VENDOR_SDK_ZIP_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_08_10.zip
-VENDOR_SDK_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_08_10
+VENDOR_ZIP_DIR_2.0.0 = ESP8266_NONOS_SDK_V2.0.0_16_08_10
+VENDOR_SDK_DIR_2.0.0 = esp_nonos_sdk_v2.0.0
 VENDOR_SDK_ZIP_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20.zip
-VENDOR_SDK_DIR_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20
+VENDOR_ZIP_DIR_1.5.4 = ESP8266_NONOS_SDK_V1.5.4_16_05_20
+VENDOR_SDK_DIR_1.5.4 = esp_nonos_sdk_v1.5.4
 VENDOR_SDK_ZIP_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18.zip
-VENDOR_SDK_DIR_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18/ESP8266_NONOS_SDK
+VENDOR_ZIP_DIR_1.5.3 = ESP8266_NONOS_SDK_V1.5.3_16_04_18/ESP8266_NONOS_SDK
+VENDOR_SDK_DIR_1.5.3 = esp_nonos_sdk_v1.5.3
 VENDOR_SDK_ZIP_1.5.2 = ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
 VENDOR_SDK_DIR_1.5.2 = esp_iot_sdk_v1.5.2
 VENDOR_SDK_ZIP_1.5.1 = ESP8266_NONOS_SDK_V1.5.1_16_01_08.zip
@@ -171,31 +179,18 @@ _libhal:
 
 
 
-sdk: $(VENDOR_SDK_DIR)/.dir
+sdk: .sdk_dir_$(VENDOR_SDK)
 	ln -snf $(VENDOR_SDK_DIR) sdk
 
-$(VENDOR_SDK_DIR)/.dir: $(VENDOR_SDK_ZIP)
+.sdk_dir_$(VENDOR_SDK): $(VENDOR_SDK_ZIP)
 	$(UNZIP) $^
+ifneq ($(strip $(VENDOR_ZIP_DIR)),)
+	-mv -f $(VENDOR_ZIP_DIR) $(VENDOR_SDK_DIR)
+endif
 	-mv License $(VENDOR_SDK_DIR)
-	touch $@
+	@touch $@
 
-$(VENDOR_SDK_DIR_2.1.0)/.dir: $(VENDOR_SDK_ZIP_2.1.0)
-	$(UNZIP) $^
-	touch $@
-
-$(VENDOR_SDK_DIR_2.0.0)/.dir: $(VENDOR_SDK_ZIP_2.0.0)
-	$(UNZIP) $^
-	mv ESP8266_NONOS_SDK $(VENDOR_SDK_DIR_2.0.0)
-	-mv License $(VENDOR_SDK_DIR)
-	touch $@
-
-$(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
-	$(UNZIP) $^
-	mv ESP8266_NONOS_SDK $(VENDOR_SDK_DIR_1.5.4)
-	-mv License $(VENDOR_SDK_DIR)
-	touch $@
-
-sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
+sdk_patch: .sdk_dir_$(VENDOR_SDK) .sdk_patch_$(VENDOR_SDK)
 
 .sdk_patch_2.1.0: user_rf_cal_sector_set.o
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020100" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
@@ -357,7 +352,8 @@ ifeq ($(STANDALONE),y)
 	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 endif
 
-
+ESP8266_NONOS_SDK-master.zip:
+	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/master.zip"
 ESP8266_NONOS_SDK-2.1.0.zip:
 	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v2.1.0.zip"
 # The only change wrt to ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip is licensing blurb in source/
