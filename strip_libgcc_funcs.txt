@@ -1,0 +1,25 @@
+OPEN libgcc.a
+DELETE _addsubdf3.o
+DELETE _addsubsf3.o
+DELETE _divdf3.o
+DELETE _divdi3.o
+DELETE _divsi3.o
+DELETE _extendsfdf2.o
+DELETE _fixdfsi.o
+DELETE _fixunsdfsi.o
+DELETE _fixunssfsi.o
+DELETE _floatsidf.o
+DELETE _floatsisf.o
+DELETE _floatunsidf.o
+DELETE _floatunsisf.o
+DELETE _muldf3.o
+DELETE _muldi3.o
+DELETE _mulsf3.o
+DELETE _truncdfsf2.o
+DELETE _udivdi3.o
+DELETE _udivsi3.o
+DELETE _umoddi3.o
+DELETE _umodsi3.o
+DELETE _umulsidi3.o
+SAVE
+END

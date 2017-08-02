@@ -1,0 +1,15 @@
+OPEN libc.a
+DELETE lib_a-bzero.o
+DELETE lib_a-memcmp.o
+DELETE lib_a-memcpy.o
+DELETE lib_a-memmove.o
+DELETE lib_a-memset.o
+DELETE lib_a-rand.o
+DELETE lib_a-strcmp.o
+DELETE lib_a-strcpy.o
+DELETE lib_a-strlen.o
+DELETE lib_a-strncmp.o
+DELETE lib_a-strncpy.o
+DELETE lib_a-strstr.o
+SAVE
+END
