@@ -142,7 +142,7 @@ The extra -I and -L flags are not needed when using the standalone SDK.
 Subdirectory `examples/` contains some example application(s) which
 can be built with esp-open-sdk. If you are interested in real-world,
 full-fledged, advanced example of a project built using esp-open-sdk,
-check https://github.com/micropython/micropython/tree/master/esp8266 .
+check https://github.com/micropython/micropython/tree/master/ports/esp8266.
 
 Pulling updates
 ===============
