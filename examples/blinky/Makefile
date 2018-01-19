@@ -1,3 +1,8 @@
+# NOTE: if you built the SDK separately with 'make STANDALONE=n' then add
+#       -I<full_path_to>/sdk/install to CFLAGS and -L<full_path_to>/sdk/lib
+#       to LDLIBS. You may also need to add -L<full_path_to>/sdk/ld to
+#       LDLIBS if the linker can't find eagle.app.v6.ld
+
 CC = xtensa-lx106-elf-gcc
 CFLAGS = -I. -mlongcalls
 LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lc -Wl,--end-group -lgcc
