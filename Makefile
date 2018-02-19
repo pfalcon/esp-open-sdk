@@ -124,6 +124,10 @@ esptool: toolchain
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
 
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
+	cp strip_libgcc_funcs.txt $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/$(shell $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -dumpversion)/
+	cd $(TOOLCHAIN)/lib/gcc/xtensa-lx106-elf/$(shell $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -dumpversion)/; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar -M < strip_libgcc_funcs.txt; rm strip_libgcc_funcs.txt
+	cp strip_libc_funcs.txt $(TOOLCHAIN)/xtensa-lx106-elf/lib
+	cd $(TOOLCHAIN)/xtensa-lx106-elf/lib; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar -M < strip_libc_funcs.txt; rm strip_libc_funcs.txt
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
 	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
