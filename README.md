@@ -55,6 +55,16 @@ Later Debian/Ubuntu versions may require:
 $ sudo apt-get install libtool-bin
 ```
 
+## Fedora/CentOS
+
+Fedora 27 and CentOS 7.x
+```
+yum install -C  \
+    make unrar autoconf automake libtool gcc gcc-c++ gperf flex  bison \
+    texinfo gawk ncurses-devel expat-devel python python-devel \
+    pyserial.noarch sed git unzip bash help2man wget bzip2 libtool
+```
+
 ## MacOS:
 ```bash
 $ brew tap homebrew/dupes
