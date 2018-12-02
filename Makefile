@@ -98,8 +98,8 @@ ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK libs into toolchain sysroot"
 	@cp -Rf sdk/lib/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/
 	@echo "Installing vendor SDK linker scripts into toolchain sysroot"
-	@sed -e 's/\r//' sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
-	@sed -e 's/\r//' sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
+	@tr -d '\r' <sdk/ld/eagle.app.v6.ld | sed -e s@../ld/@@ >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.app.v6.ld
+	@tr -d '\r' <sdk/ld/eagle.rom.addr.v6.ld >$(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/eagle.rom.addr.v6.ld
 endif
 
 clean: clean-sdk
@@ -133,8 +133,8 @@ crosstool-NG/.built: crosstool-NG/ct-ng
 
 _toolchain:
 	./ct-ng xtensa-lx106-elf
-	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
-	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	sed -i.orig s%^CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
+	sed -i.orig s%^CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
 	cat ../crosstool-config-overrides >> .config
 	./ct-ng build
 

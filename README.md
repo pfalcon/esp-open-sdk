@@ -56,10 +56,16 @@ $ sudo apt-get install libtool-bin
 ```
 
 ## MacOS:
+
+Using Homebrew:
 ```bash
 $ brew tap homebrew/dupes
 $ brew install binutils coreutils automake wget gawk libtool help2man gperf gnu-sed --with-default-names grep
-$ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+```
+
+Using MacPorts:
+```bash
+$ sudo port -N install binutils autoconf automake libtool wget gperf gsed gawk help2man
 ```
 
 In addition to the development tools MacOS needs a case-sensitive filesystem.
