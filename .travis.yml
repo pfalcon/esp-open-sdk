@@ -1,0 +1,32 @@
+dist: xenial
+language: c
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - make
+    - unrar
+    - autoconf
+    - automake
+    - libtool
+    - libtool-bin
+    - gcc
+    - g++
+    - gperf
+    - flex
+    - bison
+    - texinfo
+    - gawk
+    - libncurses5-dev
+    - libexpat1-dev
+    - python
+    - python-serial
+    - sed
+    - git
+    - help2man
+
+script:
+  # Travis sets this due to "language: c", but it confuses autotools configure when cross-building
+  - unset CC
+  - make
