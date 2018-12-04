@@ -79,6 +79,12 @@ Be sure to clone recursively:
 $ git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 ```
 
+Alternately, from the top level of the repo:
+
+```
+$ git clone submodules update --init
+```
+
 The project can be built in two modes:
 
 1. Where the toolchain and tools are kept separate from the vendor IoT SDK
@@ -166,6 +172,20 @@ Additional configuration
 You can build a statically linked toolchain by uncommenting
 `CT_STATIC_TOOLCHAIN=y` in the file `crosstool-config-overrides`. More
 fine-tunable options may be available in that file and/or Makefile.
+
+Troubleshooting
+===============
+
+OS X
+----
+
+- During make, Python 2.x is required; non-system python installs may cause
+  issues (e.g., anaconda); ensure the system python is used.
+- PATH directories containing spaces will cause build errors.  Either remove
+  those path segments, or update the Makefile to use single quotes around the
+  PATH update at line ~152, in the `_libhal` target.
+- The `pyserial` module is required in the system python; it can be installed
+  via pip.
 
 License
 =======
