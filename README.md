@@ -17,7 +17,7 @@ The complete SDK consists of:
 The source code above originates from work done directly by Tensilica Inc.,
 Cadence Design Systems, Inc, and/or their contractors.
 
-2. ESP8266 IoT SDK from Espressif Systems. This component is only
+2. ESP8266 NONOS SDK from Espressif Systems. This component is only
    partially open source, (some libraries are provided as binary blobs).
     * http://bbs.espressif.com/viewforum.php?f=46
 
@@ -81,22 +81,22 @@ $ git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 
 The project can be built in two modes:
 
-1. Where the toolchain and tools are kept separate from the vendor IoT SDK
+1. Where the toolchain and tools are kept separate from the vendor NONOS SDK
    which contains binary blobs. This makes licensing more clear, and helps
    facilitate upgrades to vendor SDK releases.
 
 2. A completely standalone ESP8266 SDK with the vendor SDK files merged
    into the toolchain. This mode makes it easier to build software (no
    additinal `-I` and `-L` flags are needed), but redistributability of
-   this build is unclear and upgrades to newer vendor IoT SDK releases are
+   this build is unclear and upgrades to newer vendor NONOS SDK releases are
    complicated. This mode is default for local builds. Note that if you
    want to redistribute the binary toolchain built with this mode, you
    should:
 
     1. Make it clear to your users that the release is bound to a
-       particular vendor IoT SDK and provide instructions how to upgrade
-       to a newer vendor IoT SDK releases.
-    2. Abide by licensing terms of the vendor IoT SDK.
+       particular vendor NONOS SDK and provide instructions how to upgrade
+       to a newer vendor NONOS SDK releases.
+    2. Abide by licensing terms of the vendor NONOS SDK.
 
 To build the self-contained, standalone toolchain+SDK:
 
