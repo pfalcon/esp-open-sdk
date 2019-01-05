@@ -87,7 +87,7 @@ The project can be built in two modes:
 
 2. A completely standalone ESP8266 SDK with the vendor SDK files merged
    into the toolchain. This mode makes it easier to build software (no
-   additinal `-I` and `-L` flags are needed), but redistributability of
+   additional `-I` and `-L` flags are needed), but redistributability of
    this build is unclear and upgrades to newer vendor IoT SDK releases are
    complicated. This mode is default for local builds. Note that if you
    want to redistribute the binary toolchain built with this mode, you
