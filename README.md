@@ -55,6 +55,12 @@ Later Debian/Ubuntu versions may require:
 $ sudo apt-get install libtool-bin
 ```
 
+## Fedora 22
+```
+$ sudo dnf install make unrar autoconf automake libtool gcc gcc-c++ gperf \
+   flex bison texinfo gawk ncurses-devel expat-devel python sed
+```
+
 ## MacOS:
 ```bash
 $ brew tap homebrew/dupes
