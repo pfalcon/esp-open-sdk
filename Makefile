@@ -23,8 +23,14 @@ UNZIP = unzip -q -o
 VENDOR_SDK_ZIP = $(VENDOR_SDK_ZIP_$(VENDOR_SDK))
 VENDOR_SDK_DIR = $(VENDOR_SDK_DIR_$(VENDOR_SDK))
 
+VENDOR_SDK_ZIP_3.0.1 = ESP8266_NONOS_SDK-3.0.1.zip
+VENDOR_SDK_DIR_3.0.1 = ESP8266_NONOS_SDK-3.0.1
+VENDOR_SDK_ZIP_3.0.0 = ESP8266_NONOS_SDK-3.0.zip
+VENDOR_SDK_DIR_3.0.0 = ESP8266_NONOS_SDK-3.0
 VENDOR_SDK_ZIP_2.2.1 = ESP8266_NONOS_SDK-2.2.1.zip
 VENDOR_SDK_DIR_2.2.1 = ESP8266_NONOS_SDK-2.2.1
+VENDOR_SDK_ZIP_2.2.0 = ESP8266_NONOS_SDK-2.2.0.zip
+VENDOR_SDK_DIR_2.2.0 = ESP8266_NONOS_SDK-2.2.0
 VENDOR_SDK_DIR_2.1.0-18-g61248df = ESP8266_NONOS_SDK-2.1.0-18-g61248df
 VENDOR_SDK_ZIP_2.1.0 = ESP8266_NONOS_SDK-2.1.0.zip
 VENDOR_SDK_DIR_2.1.0 = ESP8266_NONOS_SDK-2.1.0
@@ -188,6 +194,18 @@ $(VENDOR_SDK_DIR_2.2.1)/.dir: $(VENDOR_SDK_ZIP_2.2.1)
 	$(UNZIP) $^
 	touch $@
 
+$(VENDOR_SDK_DIR_3.0.1)/.dir: $(VENDOR_SDK_ZIP_3.0.1)
+	$(UNZIP) $^
+	touch $@
+
+$(VENDOR_SDK_DIR_3.0.0)/.dir: $(VENDOR_SDK_ZIP_3.0.0)
+	$(UNZIP) $^
+	touch $@
+
+$(VENDOR_SDK_DIR_2.2.0)/.dir: $(VENDOR_SDK_ZIP_2.2.0)
+	$(UNZIP) $^
+	touch $@
+
 $(VENDOR_SDK_DIR_2.1.0-18-g61248df)/.dir:
 	echo $(VENDOR_SDK_DIR_2.1.0-18-g61248df)
 	git clone https://github.com/espressif/ESP8266_NONOS_SDK $(VENDOR_SDK_DIR_2.1.0-18-g61248df)
@@ -212,8 +230,29 @@ $(VENDOR_SDK_DIR_1.5.4)/.dir: $(VENDOR_SDK_ZIP_1.5.4)
 
 sdk_patch: $(VENDOR_SDK_DIR)/.dir .sdk_patch_$(VENDOR_SDK)
 
+.sdk_patch_3.0.1: user_rf_cal_sector_set.o
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 030001" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	-$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_3_0_1.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR)/lib/libmain.a user_rf_cal_sector_set.o
+	@touch $@
+
+.sdk_patch_3.0.0: user_rf_cal_sector_set.o
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 030000" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR)/lib/libmain.a user_rf_cal_sector_set.o
+	@touch $@
+
 .sdk_patch_2.2.1 .sdk_patch_2.2.1: user_rf_cal_sector_set.o
 	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020201" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
+	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
+	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
+	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR)/lib/libmain.a user_rf_cal_sector_set.o
+	@touch $@
+
+.sdk_patch_2.2.0: user_rf_cal_sector_set.o
+	echo -e "#undef ESP_SDK_VERSION\n#define ESP_SDK_VERSION 020200" >>$(VENDOR_SDK_DIR)/include/esp_sdk_ver.h
 	$(PATCH) -d $(VENDOR_SDK_DIR) -p1 < c_types-c99_sdk_2.patch
 	cd $(VENDOR_SDK_DIR)/lib; mkdir -p tmp; cd tmp; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar x ../libcrypto.a; cd ..; $(TOOLCHAIN)/bin/xtensa-lx106-elf-ar rs libwpa.a tmp/*.o
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar r $(VENDOR_SDK_DIR)/lib/libmain.a user_rf_cal_sector_set.o
@@ -380,8 +419,14 @@ ifeq ($(STANDALONE),y)
 endif
 
 
+ESP8266_NONOS_SDK-3.0.1.zip:
+	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v3.0.1.zip"
+ESP8266_NONOS_SDK-3.0.zip:
+	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v3.0.zip"
 ESP8266_NONOS_SDK-2.2.1.zip:
 	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v2.2.1.zip"
+ESP8266_NONOS_SDK-2.2.0.zip:
+	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v2.2.0.zip"
 ESP8266_NONOS_SDK-2.1.0.zip:
 	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v2.1.0.zip"
 # The only change wrt to ESP8266_NONOS_SDK_V2.0.0_16_07_19.zip is licensing blurb in source/
