@@ -6,7 +6,9 @@ jobs:
 ##### linux #####
   build:
     runs-on: ubuntu-latest
-    container: debian:bullseye
+    container:
+      image: debian:bullseye
+      options: --user 1001
     name: build
     steps:
       - name: install ci tools
