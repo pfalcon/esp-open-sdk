@@ -6,9 +6,7 @@ jobs:
 ##### linux #####
   build:
     runs-on: ubuntu-latest
-    container:
-      image: debian:bullseye
-      options: --user 1001
+    container: debian:bullseye
     name: build
     steps:
       - name: install ci tools
@@ -24,4 +22,4 @@ jobs:
               sed git unzip bash help2man wget bzip2 libtool-bin
       - name: build
         run: |
-          make
+          sudo --user=1001 make
