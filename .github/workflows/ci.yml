@@ -28,5 +28,5 @@ jobs:
       - name: build
         run: |
           sudo --user=builder mkdir -p crosstool-NG/.build/tarballs/
-          (cd crosstool-NG/.build/tarballs/ && sudo --user=builder ln -s ../../../expat-2.4.1.tar.gz expat-2.3.0.tar.gz)
+          (cd crosstool-NG/.build/tarballs/ && sudo --user=builder ln -s ../../../expat-2.4.1.tar.gz expat-2.1.0.tar.gz)
           sudo --user=builder make
