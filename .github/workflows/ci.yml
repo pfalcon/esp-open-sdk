@@ -24,7 +24,7 @@ jobs:
         # crosstool-NG forbids building as root, so add a non-root user for that
         run: |
           useradd builder
-          chown --recursive builder *
+          chown --recursive builder .
       - name: build
         run: |
           sudo --user=builder make
