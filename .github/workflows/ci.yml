@@ -27,4 +27,6 @@ jobs:
           chown --recursive builder .
       - name: build
         run: |
+          mkdir -p crosstool-NG/.build/tarballs/
+          (cd crosstool-NG/.build/tarballs/ && ln -s ../../../expat-2.4.1.tar.gz expat2.3.0.tar.gz)
           sudo --user=builder make
