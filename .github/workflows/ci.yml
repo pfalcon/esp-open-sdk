@@ -22,4 +22,4 @@ jobs:
               sed git unzip bash help2man wget bzip2 libtool-bin
       - name: build
         run: |
-          sudo --user=1001 make
+          sudo --user=1000 make
