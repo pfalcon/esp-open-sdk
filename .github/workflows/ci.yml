@@ -12,7 +12,7 @@ jobs:
       - name: install ci tools
         run: |
           apt --quiet update --assume-yes
-          apt --quiet install --assume-yes git
+          apt --quiet install --assume-yes git sudo
       - name: git clone
         uses: myci-actions/checkout@master
       - name: install prerequisites
