@@ -1,3 +1,10 @@
+Fork
+----
+
+This is a fork of https://github.com/pfalcon/esp-open-sdk
+This fork is made with intention to provide up to date and maintained Open ESP NONEOS SDK.
+
+
 esp-open-sdk
 ------------
 

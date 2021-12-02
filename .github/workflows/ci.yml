@@ -1,0 +1,25 @@
+name: ci
+on:
+  push: {branches: ['*'], tags: ['*']}
+  pull_request:
+jobs:
+##### linux #####
+  build:
+    runs-on: ubuntu-latest
+    container: debian:bullseye
+    name: build
+    steps:
+      - name: install ci tools
+        run: |
+          apt --quiet update --assume-yes
+          apt --quiet install --assume-yes git
+      - name: git clone
+        uses: myci-actions/checkout@master
+      - name: install prerequisites
+        run: |
+          apt --quiet install --assume-yes make unrar-free autoconf automake libtool gcc g++ gperf \
+              flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial \
+              sed git unzip bash help2man wget bzip2 libtool-bin
+      - name: build
+        run: |
+          make
