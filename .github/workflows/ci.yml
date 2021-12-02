@@ -20,6 +20,10 @@ jobs:
           apt --quiet install --assume-yes make unrar-free autoconf automake libtool gcc g++ gperf \
               flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial \
               sed git unzip bash help2man wget bzip2 libtool-bin
+      - name: add non-root user
+        # crosstool-NG forbids building as root, so add a non-root user for that
+        run: |
+          useradd builder
       - name: build
         run: |
-          sudo --user=1000 make
+          sudo --user=builder make
