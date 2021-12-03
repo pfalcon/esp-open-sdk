@@ -20,7 +20,7 @@ USER sdk
 WORKDIR /home/sdk
 
 # Build the SDK.
-RUN make --directory=esp-open-sdk
+RUN (cd esp-open-sdk && make)
 
 # remove stuff which is not needed anymore
 RUN (cd esp-open-sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx106-hal && rm -rf esptool)
