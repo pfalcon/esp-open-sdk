@@ -15,13 +15,13 @@ USER sdk
 WORKDIR /home/sdk
 
 # copy outside repo contents into the image
-COPY . /home/sdk/esp-open-sdk
+COPY sdk /home/sdk/esp-open-sdk
 
 # Build the SDK.
-RUN make --directory=esp-open-sdk
+RUN make --directory=esp-open-sdk/sdk
 
 # remove stuff which is not needed anymore
-RUN (cd esp-open-sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx106-hal && rm -rf esptool)
+RUN (cd esp-open-sdk/sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx106-hal && rm -rf esptool)
 
 # Add toolchain to PATH
-ENV PATH="${PATH}:/home/sdk/esp-open-sdk/xtensa-lx106-elf/bin/"
+ENV PATH="${PATH}:/home/sdk/esp-open-sdk/sdk/xtensa-lx106-elf/bin/"

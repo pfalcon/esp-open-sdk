@@ -1,16 +1,16 @@
 [submodule "crosstool-NG"]
-	path = crosstool-NG
+	path = sdk/crosstool-NG
 	# url = ../../jcmvbkbc/crosstool-NG
 	url = ../../esp-open-sdk/crosstool-NG
 	branch = xtensa-1.22.x
 [submodule "lx106-hal"]
-	path = lx106-hal
+	path = sdk/lx106-hal
 	url = ../../tommie/lx106-hal
 [submodule "esptool"]
-	path = esptool
+	path = sdk/esptool
 	url = ../../themadinventor/esptool
 	branch = v3.2
 [submodule "esp-open-lwip"]
-	path = esp-open-lwip
+	path = sdk/esp-open-lwip
 	url = ../../pfalcon/esp-open-lwip
 	branch = sdk-1.5.0-experimental
