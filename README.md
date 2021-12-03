@@ -4,6 +4,8 @@ Fork
 This is a fork of https://github.com/pfalcon/esp-open-sdk
 This fork is made with intention to provide up to date and maintained Open ESP NONEOS SDK.
 
+Note, that all original files are moved into the `sdk` directory. So, bear in mind, that almost all
+commands mentioned in this README file are supposed to be run from inside of the `sdk` directory.
 
 esp-open-sdk
 ------------
@@ -108,20 +110,20 @@ The project can be built in two modes:
 To build the self-contained, standalone toolchain+SDK:
 
 ```
-$ make --directory sdk STANDALONE=y
+$ make STANDALONE=y
 ```
 
 This is the default choice which most people are looking for, so just the
 following is enough:
 
 ```
-$ make --directory sdk
+$ make
 ```
 
 To build the bare Xtensa toolchain and leave ESP8266 SDK separate:
 
 ```
-$ make --directory sdk STANDALONE=n
+$ make STANDALONE=n
 ```
 
 This will download all necessary components and compile them.
@@ -130,14 +132,14 @@ Using the toolchain
 ===================
 
 Once you complete build process as described above, the toolchain (with
-the Xtensa HAL library) will be available in the `sdk/xtensa-lx106-elf/`
-subdirectory. Add `sdk/xtensa-lx106-elf/bin/` subdirectory to your `PATH`
+the Xtensa HAL library) will be available in the `xtensa-lx106-elf/`
+subdirectory. Add `xtensa-lx106-elf/bin/` subdirectory to your `PATH`
 environment variable to execute `xtensa-lx106-elf-gcc` and other tools.
 At the end of build process, the exact command to set PATH correctly
 for your case will be output. You may want to save it, as you'll need
 the PATH set correctly each time you compile for Xtensa/ESP.
 
-ESP8266 SDK will be installed in `sdk/sdk/`. If you chose the non-standalone
+ESP8266 SDK will be installed in `sdk/`. If you chose the non-standalone
 SDK, run the compiler with the corresponding include and lib dir flags:
 
 ```
@@ -146,7 +148,7 @@ $ xtensa-lx106-elf-gcc -I$(THISDIR)/sdk/include -L$(THISDIR)/sdk/lib
 
 The extra -I and -L flags are not needed when using the standalone SDK.
 
-Subdirectory `sdk/examples/` contains some example application(s) which
+Subdirectory `examples/` contains some example application(s) which
 can be built with esp-open-sdk. If you are interested in real-world,
 full-fledged, advanced example of a project built using esp-open-sdk,
 check https://github.com/micropython/micropython/tree/master/ports/esp8266.
@@ -157,13 +159,13 @@ The project is updated from time to time, to get updates and prepare to
 build a new SDK, run:
 
 ```
-$ make --directory sdk clean
+$ make clean
 $ git pull
 $ git submodule sync
 $ git submodule update --init
 ```
 
-If you don't issue `make --directory sdk clean` (which causes toolchain and SDK to be
+If you don't issue `make clean` (which causes toolchain and SDK to be
 rebuilt from scratch on next `make`), you risk getting broken/inconsistent
 results.
 
@@ -171,7 +173,7 @@ Additional configuration
 ========================
 
 You can build a statically linked toolchain by uncommenting
-`CT_STATIC_TOOLCHAIN=y` in the file `sdk/crosstool-config-overrides`. More
+`CT_STATIC_TOOLCHAIN=y` in the file `crosstool-config-overrides`. More
 fine-tunable options may be available in that file and/or Makefile.
 
 License
