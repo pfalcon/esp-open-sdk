@@ -3,10 +3,10 @@ on: [push, pull_request]
 env:
   DOCKER_USERNAME: igagis
   DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME: esp-open-sdk
+  IMAGE_OWNER: esp-open-sdk/esp-open-sdk
   # image version is to be updated manually when new image is to be published
   IMAGE_VERSION: 0
-  IMAGE_NAME: esp-open-sdk:${{ env.IMAGE_VERSION }}
-  DOCKER_IMAGE_NAME: esp-open-sdk/esp-open-sdk/${{ env.IMAGE_NAME }}
 jobs:
   build_docker_image:
     runs-on: ubuntu-latest
@@ -14,16 +14,19 @@ jobs:
     steps:
       - name: git clone
         uses: actions/checkout@v2
+      - name: set environmental variables
+        run: |
+          echo "DOCKER_IMAGE_NAME=$DOCKER_REGISTRY/$IMAGE_OWNER/$IMAGE_NAME:$IMAGE_VERSION" >> $GITHUB_ENV
       - name: build docker image
-        run: sudo docker build -t $IMAGE_NAME .
+        run: sudo docker build -t $DOCKER_IMAGE_NAME .
       - name: login to docker registry
         run: echo $GITHUB_TOKEN | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
         if: startsWith(github.ref, 'refs/heads/master')
       - name: publish image to docker hub
         run: |
-          if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
-            docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME
+          if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
+            docker push $DOCKER_IMAGE_NAME
           else
-            echo "docker image $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME already exists, not pushing it"
+            echo "docker image $DOCKER_IMAGE_NAME already exists, not pushing it"
           fi
         if: startsWith(github.ref, 'refs/heads/master')
