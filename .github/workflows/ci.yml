@@ -5,8 +5,8 @@ env:
   DOCKER_REGISTRY: ghcr.io
   # image version is to be updated manually when new image is to be published
   IMAGE_VERSION: 0
-  IMAGE_NAME: esp-open-sdk:$IMAGE_VERSION
-  DOCKER_IMAGE_NAME: esp-open-sdk/esp-open-sdk/$IMAGE_NAME
+  IMAGE_NAME: esp-open-sdk:${{ env.IMAGE_VERSION }}
+  DOCKER_IMAGE_NAME: esp-open-sdk/esp-open-sdk/${{ env.IMAGE_NAME }}
 jobs:
   build_docker_image:
     runs-on: ubuntu-latest
