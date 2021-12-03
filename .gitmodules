@@ -1,7 +1,7 @@
 [submodule "crosstool-NG"]
 	path = crosstool-NG
 	# url = ../../jcmvbkbc/crosstool-NG
-	url = ../../igagis/crosstool-NG
+	url = ../../esp-open-sdk/crosstool-NG
 	branch = xtensa-1.22.x
 [submodule "lx106-hal"]
 	path = lx106-hal
