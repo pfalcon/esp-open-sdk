@@ -27,3 +27,6 @@ RUN (cd esp-open-sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx
 
 # Add toolchain to PATH
 ENV PATH="${PATH}:/home/sdk/esp-open-sdk/xtensa-lx106-elf/bin/"
+
+USER root
+WORKDIR /root
