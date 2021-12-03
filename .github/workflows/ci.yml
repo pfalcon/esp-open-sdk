@@ -18,12 +18,11 @@ jobs:
       - name: set environmental variables
         run: |
           echo "DOCKER_IMAGE_NAME=$DOCKER_REGISTRY/$IMAGE_OWNER/$IMAGE_NAME:$IMAGE_VERSION" >> $GITHUB_ENV
+      - name: build docker image
+        run: sudo docker build -t $DOCKER_IMAGE_NAME .
       - name: login to docker registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login $DOCKER_REGISTRY --username $DOCKER_USERNAME --password-stdin
         if: startsWith(github.ref, 'refs/heads/master')
-      - name: build docker image
-        run: sudo docker build -t $DOCKER_IMAGE_NAME .
-      
       - name: publish image to docker hub
         run: |
           if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
