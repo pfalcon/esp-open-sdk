@@ -6,7 +6,7 @@ RUN apt update
 RUN apt install --yes git
 
 # Install dependencies.
-RUN apt install --yes python-is-python3 make unrar-free autoconf automake libtool gcc g++ gperf flex bison texinfo gawk ncurses-dev libexpat-dev python3-dev python3 python3-serial sed git unzip bash help2man wget bzip2 libtool-bin
+RUN apt install --yes make unrar-free autoconf automake libtool gcc g++ gperf flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python sed git unzip bash help2man wget bzip2 libtool-bin
 
 # The crosstool-NG forbids buildinf as root, so add non-root user to build it.
 # Add newly created user right away to 'dialout' group to allow access to serial ports when using esptool.
@@ -27,6 +27,9 @@ RUN (cd esp-open-sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx
 
 # Add toolchain to PATH
 ENV PATH="${PATH}:/home/sdk/esp-open-sdk/xtensa-lx106-elf/bin/"
+
+# switch to python3
+RUN apt install --yes python-is-python3 python3-serial
 
 USER root
 WORKDIR /root
