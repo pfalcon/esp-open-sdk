@@ -14,7 +14,8 @@ RUN useradd --create-home --shell /bin/bash --groups dialout sdk
 USER sdk
 WORKDIR /home/sdk
 
-RUN git clone --recursive https://github.com/esp-open-sdk/esp-open-sdk.git
+# copy outside repo contents into the image
+COPY . /home/sdk/esp-open-sdk
 
 # Build the SDK.
 RUN make --directory=esp-open-sdk
