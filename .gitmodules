@@ -9,6 +9,7 @@
 [submodule "esptool"]
 	path = esptool
 	url = ../../themadinventor/esptool
+	branch = v3.2
 [submodule "esp-open-lwip"]
 	path = esp-open-lwip
 	url = ../../pfalcon/esp-open-lwip
