@@ -27,6 +27,7 @@ jobs:
         if: startsWith(github.ref, 'refs/heads/master')
       - name: publish image to docker hub
         run: |
+          # check if the docker image already exists in the registry
           if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
             docker push $DOCKER_IMAGE_NAME
           else
