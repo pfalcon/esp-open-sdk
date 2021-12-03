@@ -18,10 +18,10 @@ WORKDIR /home/sdk
 COPY sdk /home/sdk/esp-open-sdk
 
 # Build the SDK.
-RUN make --directory=esp-open-sdk/sdk
+RUN make --directory=esp-open-sdk
 
 # remove stuff which is not needed anymore
-RUN (cd esp-open-sdk/sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx106-hal && rm -rf esptool)
+RUN (cd esp-open-sdk && rm -rf crosstool-NG && rm -rf esp-open-lwip && rm -rf lx106-hal && rm -rf esptool)
 
 # Add toolchain to PATH
-ENV PATH="${PATH}:/home/sdk/esp-open-sdk/sdk/xtensa-lx106-elf/bin/"
+ENV PATH="${PATH}:/home/sdk/esp-open-sdk/xtensa-lx106-elf/bin/"
