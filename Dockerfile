@@ -16,6 +16,7 @@ WORKDIR /home/sdk
 
 # copy outside repo contents into the image
 COPY sdk /home/sdk/esp-open-sdk
+RUN chown --recursive sdk /home/sdk/esp-open-sdk
 
 # Build the SDK.
 RUN make --directory=esp-open-sdk
