@@ -25,7 +25,7 @@ jobs:
       - name: test
         run: |
           cd sdk/examples/blinky
-          docker run -u `id -u`:`id -g` -v $(pwd):/build -w /build $DOCKER_IMAGE_NAME make
+          docker run -u `id -u`:`id -g` -v $(pwd):/build -w /build $IMAGE_OWNER/$IMAGE_NAME:$IMAGE_VERSION make
       - name: login to docker registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login $DOCKER_REGISTRY --username $DOCKER_USERNAME --password-stdin
         if: startsWith(github.ref, 'refs/heads/master')
