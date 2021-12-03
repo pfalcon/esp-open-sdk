@@ -1,8 +1,12 @@
 name: ci
 on: [push, pull_request]
 env:
-  # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKER_USERNAME: igagis
+  DOCKER_REGISTRY: ghcr.io
+  # image version is to be updated manually when new image is to be published
+  IMAGE_VERSION: 0
+  IMAGE_NAME: esp-open-sdk:$IMAGE_VERSION
+  DOCKER_IMAGE_NAME: esp-open-sdk/esp-open-sdk/$IMAGE_NAME
 jobs:
   build_docker_image:
     runs-on: ubuntu-latest
@@ -11,32 +15,15 @@ jobs:
       - name: git clone
         uses: actions/checkout@v2
       - name: build docker image
-        run: sudo docker build -t $DOCKER_USERNAME/esp-open-sdk .
-      
-##### linux #####
-  # build:
-  #   runs-on: ubuntu-latest
-  #   container: debian:bullseye
-  #   name: build
-  #   steps:
-  #     - name: install ci tools
-  #       run: |
-  #         apt --quiet update --assume-yes
-  #         apt --quiet install --assume-yes git sudo
-  #     - name: git clone
-  #       uses: myci-actions/checkout@master
-  #     - name: install prerequisites
-  #       run: |
-  #         apt --quiet install --assume-yes make unrar-free autoconf automake libtool gcc g++ gperf \
-  #             flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial \
-  #             sed git unzip bash help2man wget bzip2 libtool-bin
-  #     - name: add non-root user
-  #       # crosstool-NG forbids building as root, so add a non-root user for that
-  #       run: |
-  #         useradd builder
-  #         chown --recursive builder .
-  #     - name: build
-  #       run: |
-  #         # sudo --user=builder mkdir -p crosstool-NG/.build/tarballs/
-  #         # (cd crosstool-NG/.build/tarballs/ && sudo --user=builder ln -s ../../../expat-2.1.0.tar.gz expat-2.1.0.tar.gz)
-  #         sudo --user=builder make
+        run: sudo docker build -t $IMAGE_NAME .
+      - name: login to docker registry
+        run: echo $GITHUB_TOKEN | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
+        if: startsWith(github.ref, 'refs/heads/master')
+      - name: publish image to docker hub
+        run: |
+          if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
+            docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME
+          else
+            echo "docker image $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME already exists, not pushing it"
+          fi
+        if: startsWith(github.ref, 'refs/heads/master')
