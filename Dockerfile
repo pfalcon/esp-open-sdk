@@ -11,7 +11,7 @@ RUN apt install -y git
 # Install dependencies.
 RUN apt install -y make unrar-free autoconf automake libtool gcc g++ gperf flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial sed git unzip bash help2man wget bzip2 libtool-bin
 
-RUN useradd --create-home --shell /bin/bash --groups dialout builder
+RUN useradd --create-home --shell /bin/bash --groups dialout sdk
 USER sdk
 WORKDIR /home/sdk
 
