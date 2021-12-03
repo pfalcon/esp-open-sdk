@@ -1,32 +1,42 @@
 name: ci
-on:
-  push: {branches: ['*'], tags: ['*']}
-  pull_request:
+on: [push, pull_request]
+env:
+  # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_USERNAME: igagis
 jobs:
-##### linux #####
-  build:
+  build_docker_image:
     runs-on: ubuntu-latest
-    container: debian:bullseye
-    name: build
+    name: build docker image
     steps:
-      - name: install ci tools
-        run: |
-          apt --quiet update --assume-yes
-          apt --quiet install --assume-yes git sudo
       - name: git clone
-        uses: myci-actions/checkout@master
-      - name: install prerequisites
-        run: |
-          apt --quiet install --assume-yes make unrar-free autoconf automake libtool gcc g++ gperf \
-              flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial \
-              sed git unzip bash help2man wget bzip2 libtool-bin
-      - name: add non-root user
-        # crosstool-NG forbids building as root, so add a non-root user for that
-        run: |
-          useradd builder
-          chown --recursive builder .
-      - name: build
-        run: |
-          # sudo --user=builder mkdir -p crosstool-NG/.build/tarballs/
-          # (cd crosstool-NG/.build/tarballs/ && sudo --user=builder ln -s ../../../expat-2.1.0.tar.gz expat-2.1.0.tar.gz)
-          sudo --user=builder make
+        uses: actions/checkout@v2
+      - name: build docker image
+        run: sudo docker build -t $DOCKER_USERNAME/esp-open-sdk .
+      
+##### linux #####
+  # build:
+  #   runs-on: ubuntu-latest
+  #   container: debian:bullseye
+  #   name: build
+  #   steps:
+  #     - name: install ci tools
+  #       run: |
+  #         apt --quiet update --assume-yes
+  #         apt --quiet install --assume-yes git sudo
+  #     - name: git clone
+  #       uses: myci-actions/checkout@master
+  #     - name: install prerequisites
+  #       run: |
+  #         apt --quiet install --assume-yes make unrar-free autoconf automake libtool gcc g++ gperf \
+  #             flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python3-serial \
+  #             sed git unzip bash help2man wget bzip2 libtool-bin
+  #     - name: add non-root user
+  #       # crosstool-NG forbids building as root, so add a non-root user for that
+  #       run: |
+  #         useradd builder
+  #         chown --recursive builder .
+  #     - name: build
+  #       run: |
+  #         # sudo --user=builder mkdir -p crosstool-NG/.build/tarballs/
+  #         # (cd crosstool-NG/.build/tarballs/ && sudo --user=builder ln -s ../../../expat-2.1.0.tar.gz expat-2.1.0.tar.gz)
+  #         sudo --user=builder make
