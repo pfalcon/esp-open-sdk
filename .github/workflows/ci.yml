@@ -24,7 +24,6 @@ jobs:
         run: sudo docker build -t $DOCKER_IMAGE_NAME .
       - name: test
         run: |
-          docker run --rm $DOCKER_IMAGE_NAME /usr/bin/env python --version
           cd sdk/examples/blinky
           docker run -u `id -u`:`id -g` -v $(pwd):/build -w /build $DOCKER_IMAGE_NAME make
       - name: login to docker registry
