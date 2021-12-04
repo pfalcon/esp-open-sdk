@@ -42,4 +42,4 @@ RUN apt autoremove --yes
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # print python version
-RUN /usr/bin/env python --version
+RUN python --version
