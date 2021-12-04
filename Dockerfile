@@ -39,6 +39,7 @@ RUN apt install --yes python3 python-is-python3 python3-serial
 RUN apt autoremove --yes
 
 # make python3 the default
+RUN rm /usr/bin/python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # print python version
