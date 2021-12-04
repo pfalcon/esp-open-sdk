@@ -8,7 +8,7 @@ commands mentioned in this README file are supposed to be run from inside of the
 
 # Docker images
 
-This fork provides pre-build docker images which can be used to build ESP8266 projects.
+This fork provides pre-built docker images which can be used to build ESP8266 projects.
 
 Example:
 ```console
