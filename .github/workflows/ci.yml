@@ -26,11 +26,11 @@ jobs:
         run: |
           cd sdk/examples/blinky
           docker run -u `id -u`:`id -g` -v $(pwd):/build -w /build $DOCKER_IMAGE_NAME make
-      - name: login to docker registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login $DOCKER_REGISTRY --username $DOCKER_USERNAME --password-stdin
-        if: startsWith(github.ref, 'refs/heads/master')
       - name: publish image to docker hub
         run: |
+          # login to docker registry
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login $DOCKER_REGISTRY --username $DOCKER_USERNAME --password-stdin
+
           # check if the docker image already exists in the registry
           if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
             docker push $DOCKER_IMAGE_NAME

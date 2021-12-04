@@ -23,6 +23,11 @@ void some_timerfunc(void *arg)
   }
 }
 
+void ICACHE_FLASH_ATTR user_pre_init()
+{
+	// TODO: register partition table with system_partition_table_regist()
+}
+
 void ICACHE_FLASH_ATTR user_init()
 {
   // init gpio subsytem
