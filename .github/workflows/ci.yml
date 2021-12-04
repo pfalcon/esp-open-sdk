@@ -7,7 +7,7 @@ env:
   IMAGE_OWNER: esp-open-sdk/esp-open-sdk
   IMAGE_NAME: esp-open-sdk
   # image version is to be updated manually when new image is to be published
-  IMAGE_VERSION: 1
+  IMAGE_VERSION: 2
 jobs:
   build_docker_image:
     runs-on: ubuntu-latest
@@ -20,6 +20,7 @@ jobs:
       - name: set environmental variables
         run: |
           echo "DOCKER_IMAGE_NAME=$DOCKER_REGISTRY/$IMAGE_OWNER/$IMAGE_NAME:$IMAGE_VERSION" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_LATEST_NAME=$DOCKER_REGISTRY/$IMAGE_OWNER/$IMAGE_NAME:latest" >> $GITHUB_ENV
       - name: build docker image
         run: sudo docker build -t $DOCKER_IMAGE_NAME .
       - name: test
@@ -34,6 +35,10 @@ jobs:
           # check if the docker image already exists in the registry
           if [ "$(DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1; echo $?)" -eq 1 ]; then
             docker push $DOCKER_IMAGE_NAME
+
+            # create 'latest' image alias
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_LATEST_NAME
+            docker push $DOCKER_IMAGE_LATEST_NAME
           else
             echo "docker image $DOCKER_IMAGE_NAME already exists, not pushing it"
           fi

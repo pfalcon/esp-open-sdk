@@ -1,5 +1,4 @@
-Fork
-----
+# Fork
 
 This is a fork of https://github.com/pfalcon/esp-open-sdk
 This fork is made with intention to provide up to date and maintained Open ESP NONEOS SDK.
@@ -7,8 +6,18 @@ This fork is made with intention to provide up to date and maintained Open ESP N
 Note, that all original files are moved into the `sdk` directory. So, bear in mind, that almost all
 commands mentioned in this README file are supposed to be run from inside of the `sdk` directory.
 
-esp-open-sdk
-------------
+# Docker images
+
+This fork provides pre-build docker images which can be used to build ESP8266 projects.
+
+Example:
+```console
+cd sdk/examples/blinky
+docker run -u `id -u`:`id -g` -v `pwd`:/build -w /build ghcr.io/esp-open-sdk/esp-open-sdk/esp-open-sdk:latest make
+```
+
+# esp-open-sdk
+
 
 This repository provides the integration scripts to build a complete
 standalone SDK (with toolchain) for software development with the
