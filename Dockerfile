@@ -14,10 +14,12 @@ RUN useradd --create-home --shell /bin/bash --groups dialout sdk
 
 # copy outside repo contents into the image
 COPY sdk /home/sdk/esp-open-sdk
-RUN chown --recursive sdk /home/sdk/esp-open-sdk
+# RUN chown --recursive sdk /home/sdk/esp-open-sdk
 
 USER sdk
 WORKDIR /home/sdk
+
+COPY sdk /home/sdk/esp-open-sdk
 
 # Build the SDK.
 RUN (cd esp-open-sdk && make)
