@@ -13,7 +13,7 @@ This fork provides pre-built docker images which can be used to build ESP8266 pr
 Example:
 ```console
 cd sdk/examples/blinky
-docker run -u `id -u`:`id -g` -v `pwd`:/build -w /build ghcr.io/esp-open-sdk/esp-open-sdk/esp-open-sdk:latest make
+docker run --rm -u `id -u`:`id -g` -v `pwd`:/build -w /build ghcr.io/esp-open-sdk/esp-open-sdk/esp-open-sdk:latest make
 ```
 
 # esp-open-sdk
