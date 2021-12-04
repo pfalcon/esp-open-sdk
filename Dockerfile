@@ -34,10 +34,12 @@ WORKDIR /root
 # switch to python3 because python-serial package is not available in debian bullseye, so we have to use python3-serial
 # and esptool will be run with python3 then
 RUN apt install --yes python3 python-is-python3 python3-serial
-RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # remove unused packages
 RUN apt autoremove --yes
+
+# make python3 the default
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # print python version
 RUN /usr/bin/env python --version
