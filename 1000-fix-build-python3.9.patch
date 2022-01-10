@@ -1,0 +1,44 @@
+Fix error building gdb-7.10 with python 3.9 (e.g. on Ubuntu 21.10), by fixing gdb to not use an internal-only API.
+
+As suggested by canardos in their 2018-08-28 comment on https://github.com/pfalcon/esp-open-sdk/issues/339
+applying (by hand) this patch: https://sourceware.org/legacy-ml/gdb-patches/2018-05/msg00863.html
+to gdb/python.c fixed the issue.  This patch is the diff that resulted.
+
+--- gdb-7.10/gdb/python/python.c~	2015-08-28 14:22:07.000000000 -0700
++++ gdb-7.10/gdb/python/python.c	2022-01-06 12:44:24.136568791 -0800
+@@ -1622,6 +1622,14 @@
+ }
+ #endif
+ 
++#ifdef IS_PY3K
++PyMODINIT_FUNC
++PyInit__gdb (void)
++{
++  return PyModule_Create (&python_GdbModuleDef);
++}
++#endif
++
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ extern initialize_file_ftype _initialize_python;
+ 
+@@ -1743,6 +1751,9 @@
+      remain alive for the duration of the program's execution, so
+      it is not freed after this call.  */
+   Py_SetProgramName (progname_copy);
++
++  /* Define _gdb as a built-in module.  */
++  PyImport_AppendInittab ("_gdb", PyInit__gdb);
+ #else
+   Py_SetProgramName (progname);
+ #endif
+@@ -1752,9 +1763,7 @@
+   PyEval_InitThreads ();
+ 
+ #ifdef IS_PY3K
+-  gdb_module = PyModule_Create (&python_GdbModuleDef);
+-  /* Add _gdb module to the list of known built-in modules.  */
+-  _PyImport_FixupBuiltin (gdb_module, "_gdb");
++  gdb_module = PyImport_ImportModule ("_gdb");
+ #else
+   gdb_module = Py_InitModule ("_gdb", python_GdbMethods);
+ #endif
