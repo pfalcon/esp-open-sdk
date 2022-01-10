@@ -143,6 +143,7 @@ crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
 	test -s crosstool-NG/scripts/build/companion_libs/121-isl.sh.orig || $(PATCH) -p1 -i ctng-fix-isl-url.patch
+	test -s crosstool-NG/scripts/build/companion_libs/210-expat.sh.orig || $(PATCH) -p1 -i ctng-fix-expat-url.patch	
 	$(MAKE) -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:
