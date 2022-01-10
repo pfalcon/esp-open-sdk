@@ -146,7 +146,7 @@ crosstool-NG/ct-ng: crosstool-NG/bootstrap
 
 _ct-ng:
 	./bootstrap
-	./configure --prefix=`pwd`
+	./configure --prefix=`pwd` --with-bash=/bin/bash
 	$(MAKE) MAKELEVEL=0
 	$(MAKE) install MAKELEVEL=0
 
