@@ -128,6 +128,9 @@ toolchain $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc $(TOOLCHAIN)/xtensa-lx106-elf/sy
 
 crosstool-NG/.built: crosstool-NG/ct-ng
 	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
+	cp -f 1001-fix-reload1-compile-error.patch crosstool-NG/local-patches/gcc/4.8.5/
+	mkdir -p crosstool-NG/local-patches/gdb/7.10/
+	cp -f 1000-fix-build-python3.9.patch crosstool-NG/local-patches/gdb/7.10/
 	$(MAKE) -C crosstool-NG -f ../Makefile _toolchain
 	touch $@
 
@@ -142,11 +145,13 @@ _toolchain:
 crosstool-NG: crosstool-NG/ct-ng
 
 crosstool-NG/ct-ng: crosstool-NG/bootstrap
+	test -s crosstool-NG/scripts/build/companion_libs/121-isl.sh.orig || $(PATCH) -p1 -i ctng-fix-isl-url.patch
+	test -s crosstool-NG/scripts/build/companion_libs/210-expat.sh.orig || $(PATCH) -p1 -i ctng-fix-expat-url.patch
 	$(MAKE) -C crosstool-NG -f ../Makefile _ct-ng
 
 _ct-ng:
 	./bootstrap
-	./configure --prefix=`pwd`
+	./configure --prefix=`pwd` --with-bash=/bin/bash
 	$(MAKE) MAKELEVEL=0
 	$(MAKE) install MAKELEVEL=0
 

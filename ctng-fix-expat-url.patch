@@ -1,0 +1,26 @@
+Fix to get expat-2.1.0.tar.gz from a different location, since it is no longer
+available from the one that had been used.
+
+NOTE: The reason the old location didn't work is that expat-2.1.0.tar.gz on
+sourceforge had been renamed to
+"expat-2.1.0-RENAMED-VULNERABLE-PLEASE-USE-2.3.0-INSTEAD.tar.gz"... I
+considered seeing if it would work using 2.3.0 as suggested, but 2.3.0
+similarly redirects to 2.4.1, and the immediate goal is to get this stuff to
+build with minimally intrusive changes.
+
+However, it would probably be wise to switch to a newer expat!
+
+diff --git a/scripts/build/companion_libs/210-expat.sh b/scripts/build/companion_libs/210-expat.sh
+index 304482cd..dc1085d2 100644
+--- a/crosstool-NG/scripts/build/companion_libs/210-expat.sh
++++ b/crosstool-NG/scripts/build/companion_libs/210-expat.sh
+@@ -10,7 +10,8 @@ if [ "${CT_EXPAT_TARGET}" = "y" -o "${CT_EXPAT}" = "y" ]; then
+ 
+ do_expat_get() {
+     CT_GetFile "expat-${CT_EXPAT_VERSION}" .tar.gz    \
+-               http://downloads.sourceforge.net/project/expat/expat/${CT_EXPAT_VERSION}
++	       https://src.fedoraproject.org/repo/pkgs/expat/expat-${CT_EXPAT_VERSION}.tar.gz/dd7dab7a5fea97d2a6a43f511449b7cd
++               # http://downloads.sourceforge.net/project/expat/expat/${CT_EXPAT_VERSION}
+ }
+ 
+ do_expat_extract() {

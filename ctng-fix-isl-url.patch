@@ -1,0 +1,18 @@
+Fix to get isl-0.14.tar.bz2 from a different location, since isl.gforge.inria.fr seems to no longer work.
+
+This is from: https://github.com/pfalcon/esp-open-sdk/issues/386
+
+diff --git a/scripts/build/companion_libs/121-isl.sh b/scripts/build/companion_libs/121-isl.sh
+index a93d1aad..ca0a7f16 100644
+--- a/crosstool-NG/scripts/build/companion_libs/121-isl.sh
++++ b/crosstool-NG/scripts/build/companion_libs/121-isl.sh
+@@ -14,7 +14,8 @@ if [ "${CT_ISL}" = "y" ]; then
+ # Download ISL
+ do_isl_get() {
+     CT_GetFile "isl-${CT_ISL_VERSION}" \
+-        http://isl.gforge.inria.fr
++	http://gcc.gnu.org/pub/gcc/infrastructure
++        # http://isl.gforge.inria.fr
+ }
+ 
+ # Extract ISL
